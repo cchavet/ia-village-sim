@@ -5,10 +5,10 @@
             "age": 30,
             "description": "Sérieux, respecte les procédures. Le leader naturel.",
             "pos": [
-                17,
-                17
+                18,
+                18
             ],
-            "energy": 70,
+            "energy": 65,
             "inventory": [
                 "Uniforme déchiré"
             ],
@@ -22,10 +22,10 @@
             "age": 20,
             "description": "Obsédée par son téléphone (inutile ici). Superficielle mais peut surprendre.",
             "pos": [
-                15,
-                16
+                16,
+                17
             ],
-            "energy": 80,
+            "energy": 75,
             "inventory": [
                 "Smartphone (0% batterie)",
                 "Maillot de bain"
@@ -38,10 +38,10 @@
             "age": 45,
             "description": "Grand inventeur, voyageur expérimenté. Capable de réparer la radio.",
             "pos": [
-                13,
-                18
+                12,
+                17
             ],
-            "energy": 60,
+            "energy": 55,
             "inventory": [
                 "Lunettes cassées"
             ],
@@ -51,8 +51,12 @@
             }
         }
     },
-    "world_time": 10,
+    "world_time": 11,
     "logs": [
+        "📖 **CHRONIQUE (11h)**\n\nL’oiseau de métal a fini de hurler dans le sable poisseux, me laissant seul face à une soif qui vous cisaille les entrailles comme un vieux rasoir rouillé. Entre l'ombre menaçante des palmes et l'écume amère, cette île n'est pas un refuge, c'est un bourreau patient qui attend que je ferme l'œil.\n\n---",
+        "**11h - John** [🔋65% | 📍[18, 18] | 🎒1]\n\n*En tant que commandant de bord, ma priorité absolue est d'établir un périmètre de sécurité et de localiser l'émetteur de secours. Je dois trouver des débris exploitables pour envoyer un signal de détresse.*\n\n> 🔧 SE DEPLACER ",
+        "**11h - Barbie** [🔋75% | 📍[16, 17] | 🎒2]\n\n*Ok, premier jour sans Wi-Fi, c'est littéralement la fin du monde. Mon téléphone est mort comme mon dernier date, mais peut-être que si je marche un peu, je trouverai un spot avec une meilleure lumière... ou de quoi charger ce truc pour appeler mon agent.*\n\n> 🔧 SE DEPLACER ",
+        "**11h - Ken** [🔋55% | 📍[12, 17] | 🎒1]\n\n*Ma vue est trouble sans mes verres intacts, mais je dois impérativement localiser le fuselage du crash. Si je veux émettre un signal SOS, il me faut du fil de cuivre et des condensateurs encore exploitables dans les débris.*\n\n> 🔧 SE DEPLACER ",
         "📖 **CHRONIQUE (10h)**\n\nLa nuit était tombée sur cette île maudite comme un linceul de plomb. L'odeur salée de la mort et du désespoir flottait dans l'air, se mêlant à celle, âcre, de la peur. Ici, la civilisation n'était qu'un vague souvenir, et la seule loi était celle du plus fort, ou plutôt, du plus rusé.\n\n\n---",
         "**10h - John** [🔋70% | 📍[17, 17] | 🎒1]\n\n*Je dois essayer de réparer la radio. C'est le seul moyen de communiquer avec l'avion. J'ai besoin d'un peu plus d'énergie avant de le faire.*\n\n> 🔧 PARLER ",
         "**10h - Barbie** [🔋80% | 📍[15, 16] | 🎒2]\n\n*J'ai besoin de mon téléphone pour appeler l'aérodrome, mais c'est toujours enfoncé... Je devrais chercher un moyen de le débarrasser.*\n\n> 🔧 FOUILLER ",

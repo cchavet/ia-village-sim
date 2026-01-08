@@ -81,7 +81,7 @@ def narrate_turn_stream(events):
     try:
         # Utilisation de generate_content_stream pour le V1 SDK
         response_stream = client.models.generate_content_stream(
-            model='gemini-2.0-flash-exp',
+            model='models/gemini-3-flash-preview',
             contents=prompt
         )
         for chunk in response_stream:

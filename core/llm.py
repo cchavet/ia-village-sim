@@ -1,26 +1,35 @@
-import subprocess
+import os
+from google import genai
 import streamlit as st
-from langchain_ollama import OllamaLLM
 
-def check_and_pull_model(model_name):
-    """Vérifie si le modèle Ollama est disponible, sinon le télécharge."""
-    try:
-        # Liste les modèles locaux
-        result = subprocess.run(["ollama", "list"], capture_output=True, text=True, encoding='utf-8')
-        if model_name not in result.stdout:
-            st.info(f"Le modèle '{model_name}' n'est pas trouvé localement. Téléchargement en cours...")
-            with st.spinner(f"Téléchargement de {model_name} (cela peut prendre quelques minutes)..."):
-                # Télécharge le modèle
-                subprocess.run(["ollama", "pull", model_name], check=True)
-            st.success(f"Modèle '{model_name}' téléchargé avec succès !")
-    except FileNotFoundError:
-        st.error("Ollama n'est pas installé ou n'est pas dans le PATH. Veuillez installer Ollama : https://ollama.com")
-        st.stop()
-    except Exception as e:
-        st.error(f"Erreur lors de la gestion du modèle Ollama : {e}")
-        st.stop()
+class GeminiWrapper:
+    def __init__(self, model_name):
+        try:
+            if not os.path.exists("api.key"):
+                raise ValueError("api.key introuvable")
+            with open("api.key", "r") as f:
+                self.api_key = f.read().strip()
+            self.client = genai.Client(api_key=self.api_key)
+            self.model_name = model_name
+        except Exception as e:
+            st.error(f"Erreur Init Gemini: {e}")
+            self.client = None
+
+    def invoke(self, prompt):
+        if not self.client:
+            return "{}"
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt
+            )
+            return response.text
+        except Exception as e:
+            print(f"Gemini Invoke Error: {e}")
+            # Retourner un JSON vide ou valid pour éviter crash
+            return "{}"
 
 def get_llm():
-    MODEL_NAME = "llama3.2:1b"
-    check_and_pull_model(MODEL_NAME)
-    return OllamaLLM(model=MODEL_NAME, temperature=0.7, format="json")
+    # User requested: models/gemini-3-flash-preview
+    MODEL_NAME = "models/gemini-3-flash-preview"
+    return GeminiWrapper(MODEL_NAME)
