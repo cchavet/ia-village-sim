@@ -18,10 +18,13 @@ def get_gemini_client():
         print(f"Gemini Init Error: {e}")
         return None
 
-def prepare_prompt_locally(events):
+def prepare_prompt_ai(events):
     """
-    Utilise le modèle local (Gemma 2 / Llama) pour synthétiser les logs.
+    Utilise Gemini 3 pour synthétiser les logs (anciennement local).
     """
+    client = get_gemini_client()
+    if not client: return events
+
     try:
         metaprompt = f"""
         Tu es un assistant scénariste. Voici des logs bruts d'un jeu de survie :
@@ -30,11 +33,11 @@ def prepare_prompt_locally(events):
         Tache : Résume ces actions en 4 lignes maximum. Identifie tension/danger.
         Format : "Actions: ..., Ambiance: ..."
         """
-        res = subprocess.run(
-            ["ollama", "run", "llama3.2:1b", metaprompt], 
-            capture_output=True, text=True, encoding='utf-8', shell=True
+        response = client.models.generate_content(
+            model='models/gemini-3-flash-preview',
+            contents=metaprompt
         )
-        return res.stdout.strip()
+        return response.text.strip()
     except Exception:
         return events # Fallback brut
 
@@ -59,10 +62,45 @@ def narrate_turn_local(events):
     except Exception as e:
         return f"(Erreur Local: {e})"
 
-def narrate_turn_stream(events):
+def extract_facts_ai(logs_text):
+    """
+    Analyse les logs pour extraire les faits marquants via Gemini 3 (anciennement local).
+    """
+    client = get_gemini_client()
+    if not client: return []
+
+    try:
+        prompt = f"""
+        Analyste de scénario.
+        LOGS:
+        {logs_text}
+        
+        TACHE: Liste UNIQUEMENT les événements majeurs (1 ligne par fait).
+        CRITERES: Blessure grave, Objet trouvé, Découverte lieu, Rencontre.
+        SI RIEN D'IMPORTANT: Réponds "Rien".
+        FORMAT: "- [Nom] a trouvé..."
+        """
+        response = client.models.generate_content(
+            model='models/gemini-3-flash-preview',
+            contents=prompt
+        )
+        output = response.text.strip()
+        
+        if "Rien" in output or not output:
+             return []
+        
+        # Filtrage basique
+        facts = [line for line in output.split('\n') if line.strip().startswith('-')]
+        return facts
+    except Exception:
+        return []
+
+def narrate_turn_stream(events, previous_context="", key_facts=""):
     """
     Récit d'ambiance via Gemini (Cloud) - Mode Streaming.
     Renvoie un générateur.
+    previous_context : Le texte des derniers tours pour éviter les répétitions.
+    key_facts : Liste des faits marquants (Loot, blessures...) à garder en tête.
     """
     client = get_gemini_client()
     # Si pas de client ou erreur init, fallback direct
@@ -73,9 +111,19 @@ def narrate_turn_stream(events):
     context = prepare_prompt_locally(events)
     prompt = f"""
     CONTEXTE: Jeu Survival "Crash sur l'Île".
-    RESUME: {context}
-    TACHE: Narrateur style Film Noir / Survie.
+    
+    FAITS IMPORTANTS (Mémoire) :
+    {key_facts}
+    
+    PRECEDEMMENT (Style et Ton) :
+    {previous_context}
+    
+    NOUVEAUX FAITS (Résumé) : 
+    {context}
+    
+    TACHE: Écris la suite. Narrateur style Film Noir / Survie.
     CRITIQUE: Un seul paragraphe court (< 3 phrases). Immersif.
+    IMPORTANT: NE PAS RÉPÉTER CE QUI A ÉTÉ DIT PRÉCÉDEMMENT. FAIS AVANCER L'HISTOIRE.
     """
     
     try:
@@ -100,7 +148,7 @@ def narrate_turn(events):
     if not client:
         return None
 
-    context = prepare_prompt_locally(events)
+    context = prepare_prompt_ai(events)
     prompt = f"""
     CONTEXTE: Jeu Survival "Crash sur l'Île".
     RESUME: {context}
@@ -110,7 +158,7 @@ def narrate_turn(events):
     
     try:
         response = client.models.generate_content(
-            model='gemini-2.0-flash-exp',
+            model='models/gemini-3-flash-preview',
             contents=prompt
         )
         return response.text.strip()
@@ -140,7 +188,7 @@ def generate_chapter(day_num, logs, survivors_state):
     
     try:
         response = client.models.generate_content(
-            model='gemini-2.0-flash-exp',
+            model='models/gemini-3-flash-preview',
             contents=prompt
         )
         
