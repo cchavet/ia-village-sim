@@ -3,7 +3,12 @@ def update_relationships(villager, decision):
         target = decision['reaction'].get('target')
         delta = decision['reaction'].get('delta', 0)
         
-        if target in villager['rel']:
-            villager['rel'][target] = max(-100, min(100, villager['rel'][target] + delta))
+        if 'rel' not in villager:
+            villager['rel'] = {}
+            
+        if target not in villager['rel']:
+            villager['rel'][target] = 0
+
+        villager['rel'][target] = max(-100, min(100, villager['rel'][target] + delta))
     
     return villager

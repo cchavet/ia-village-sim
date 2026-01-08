@@ -1,58 +1,46 @@
 import json
 import streamlit as st
-from core.config import LOCATIONS, ITEMS_PRICES
 
-def agent_turn(llm, name, villagers_state, world_time, weather):
+def agent_turn(llm, name, villagers_state, world_time, weather, seed, terrain_name):
     v = villagers_state[name]
-    est_nuit = world_time >= 22 or world_time <= 6
     
-    # Localisation
-    current_pos_tuple = tuple(v['pos'])
-    current_location_name = "En chemin"
-    for loc_name, coords in LOCATIONS.items():
-        if tuple(coords) == current_pos_tuple:
-            current_location_name = loc_name
-            break
-            
-    # Voisins et leurs inventaires pour le commerce
+    # Infos perso
+    bio = v.get('description', 'Survivant')
+    role = v['role']
+    inventory = v.get('inventory', [])
+    
+    # Voisins
     voisins_infos = []
     for other, data in villagers_state.items():
         if data['pos'] == v['pos'] and other != name:
-            inv = data.get('inventory', [])
-            voisins_infos.append(f"{other} (Vend: {inv})")
+            voisins_infos.append(other)
+            
+    # Contexte
+    est_nuit = world_time >= 20 or world_time <= 5
+    consigne = "Il fait nuit. DANGER. Reste groupé ou dors." if est_nuit else "Cherche des ressources, explore, répare la radio."
     
-    relations_text = ", ".join([f"{n}: {score}" for n, score in v['rel'].items()])
-    
-    status = "fatigué" if v['energy'] < 30 else "en forme"
-    consigne_nuit = "Il fait nuit, rentre." if est_nuit else "Il fait jour, travaille, crafte ou commerce."
-    
-    # Infos économie
-    gold = v.get('gold', 0)
-    inventory = v.get('inventory', [])
-    prices_list = ", ".join([f"{k}:{v}or" for k, v in ITEMS_PRICES.items()])
-
     prompt = f"""
-    Tu es {name} ({v['role']}). Heure: {world_time}h. Énergie: {v['energy']}. Or: {gold}. Inv: {inventory}.
-    Météo: {weather}. Lieu: {current_location_name}.
-    Relations: {relations_text}.
-    Voisins ici: {voisins_infos}.
-    Prix du marché: {prices_list}.
+    CONTEXTE: {seed['description']}
+    PERSONNAGE: Tu es {name}, {role} ({v['age']} ans). {bio}.
+    ETAT: Énergie {v['energy']}/100. Inventaire: {inventory}.
+    ENVIRONNEMENT: Tu es à: {terrain_name} (Coord {v['pos']}). Météo: {weather}.
+    VOISINS: {voisins_infos}.
     
-    OBJECTIFS:
-    1. Survivre (Dormir la nuit).
-    2. Exercer ton métier (CRAFT si tu as le bon rôle).
-    3. T'enrichir (ACHETER des objets utiles, ou attendre des clients).
-    
-    ROLES CRAFT: Forgeron -> "Épée", Apothicaire -> "Potion".
-    
+    {consigne}
+
+    ACTIONS POSSIBLES:
+    - "SE DEPLACER": Changer de case [x, y]. (Max 1 case de distance).
+    - "FOUILLER": Chercher des objets (efficace sur les zones '?' rouges ou 'A' crash).
+    - "DORMIR": Récupérer énergie.
+    - "PARLER": Discuter avec voisins.
+    - "UTILISER": Utiliser un objet de l'inventaire.
+
     Réponds UNIQUEMENT en JSON:
     {{
-        "pensee": "...",
-        "destination": "Nom exact du lieu (L'Auberge, La Place...)",
-        "action": "DORMIR" | "TRAVAILLER" | "CRAFT" | "ACHETER" | "RIEN",
-        "objet": "Nom de l'objet (si CRAFT ou ACHETER)",
-        "cible": "Nom du vendeur (si ACHETER)",
-        "reaction": {{"target": "Nom", "delta": 5}} // optionnel
+        "pensee": "Ta réflexion de survivant (peur, espoir, faim...)",
+        "action": "SE DEPLACER" | "FOUILLER" | "DORMIR" | "PARLER",
+        "dest": [x, y], // Tes nouvelles coordonnées (Obligatoire si action=SE DEPLACER, sinon garder actuelles)
+        "reaction": {{"target": "Nom", "delta": 2}} // Optionnel
     }}
     """
     try:
@@ -69,18 +57,14 @@ def agent_turn(llm, name, villagers_state, world_time, weather):
             defaults = {
                 "action": "RIEN",
                 "pensee": "...",
-                "destination": current_location_name,
-                "objet": None,
-                "cible": None,
+                "dest": v['pos'],
                 "reaction": None
             }
             data = {**defaults, **data}
-
-            # TRADUCTION Coordonnées
-            dest_name = data.get('destination')
-            if dest_name in LOCATIONS:
-                data['dest'] = LOCATIONS[dest_name]
-            else:
+            
+            # Validation Coordonnées (Fix ValueError unpacking)
+            dest = data.get('dest')
+            if not isinstance(dest, list) or len(dest) != 2:
                 data['dest'] = v['pos']
             
             return data
@@ -89,4 +73,4 @@ def agent_turn(llm, name, villagers_state, world_time, weather):
 
     except Exception as e:
         print(f"Erreur IA {name}: {e}")
-        return {"pensee": f"Erreur.. {e}", "action": "RIEN", "dest": v['pos'], "reaction": None}
+        return {"pensee": f"Je survis... ({e})", "action": "RIEN", "dest": v['pos'], "reaction": None}

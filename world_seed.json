@@ -1,0 +1,113 @@
+{
+  "scenario_name": "Crash sur l'Île (32x32)",
+  "description": "Un avion s'est écrasé sur une île thaïlandaise inhabitée.",
+  "grid_size": 32,
+  "map_legend": {
+    "~": "Mer (Bleu)",
+    ".": "Plage (Jaune)",
+    "#": "Jungle (Vert)",
+    "T": "Terre (Marron)",
+    "A": "Site du Crash (Blanc)",
+    "?": "Débris/Affaires (Rouge)"
+  },
+  "map_colors": {
+    "~": "#1E90FF",
+    ".": "#F0E68C",
+    "#": "#228B22",
+    "T": "#8B4513",
+    "A": "#FFFFFF",
+    "?": "#FF0000"
+  },
+  "map_layout": [
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~.~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~..~...~?~~~~~~~~~~~",
+    "~~~~~~~~~.~~....#~~..~~~~~~~~~~~",
+    "~~~~~~~~.~~#~###........~~~~~~~~",
+    "~~~~~~~~.~...#####.##...~~~~~~~~",
+    "~~~~~~~.~..#.#######.###..~~~~~~",
+    "~~~~~~.~##.############...~~~~~~",
+    "~~~~~.~#..##?#TTT#?T####.~~~~~~~",
+    "~~~~~..######TTT#TT#T###.#.~~~~~",
+    "~~~~.~..###T##TTTTT##T###....~~~",
+    "~~~~~...###TTTTTTTTTTT#####~~~~~",
+    "~~~~~..####?TTTTTTTTT#T####.~~~~",
+    "~~~~.#..#T#TTTTTTTTTT#####.~..~~",
+    "~~~...?###TTTTTTA?TTTT####...~~~",
+    "~~~~~######TTTTT?TTTTTT####.~?~~",
+    "~~~.~..###TTTTTTTTTTTTT##....~~~",
+    "~~~~~######TTTTTTTTTTT###...~~~~",
+    "~~~~~~##?###TTTT?TTTTT#####~.~~~",
+    "~~~~~~..####T#TTTT######.#.~~~~~",
+    "~~~~~~~..#####TT#########.~~~~~~",
+    "~~~~~.....#############..~.~~~~~",
+    "~~~~~~~~.#..####?####..#.~~~~~~~",
+    "~~~~~~~~~.#..####..##...~~~~~~~~",
+    "~~~~~~~~~~~...###..#.~..~~~~~~~~",
+    "~~~~~~~~~~.~..~.?...~.~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~..~.~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  ],
+  "characters": {
+    "John": {
+      "role": "Pilote",
+      "age": 30,
+      "description": "Sérieux, respecte les procédures. Le leader naturel.",
+      "pos": [
+        16,
+        18
+      ],
+      "energy": 80,
+      "inventory": [
+        "Uniforme déchiré"
+      ],
+      "gold": 0,
+      "rel": {}
+    },
+    "Barbie": {
+      "role": "Influenceuse",
+      "age": 20,
+      "description": "Obsédée par son téléphone (inutile ici). Superficielle mais peut surprendre.",
+      "pos": [
+        17,
+        18
+      ],
+      "energy": 90,
+      "inventory": [
+        "Smartphone (0% batterie)",
+        "Maillot de bain"
+      ],
+      "gold": 0,
+      "rel": {}
+    },
+    "Ken": {
+      "role": "Docteur en Électronique",
+      "age": 45,
+      "description": "Grand inventeur, voyageur expérimenté. Capable de réparer la radio.",
+      "pos": [
+        15,
+        18
+      ],
+      "energy": 70,
+      "inventory": [
+        "Lunettes cassées"
+      ],
+      "gold": 0,
+      "rel": {}
+    }
+  },
+  "loot_table": [
+    "Mallette de premiers secours",
+    "Bouteille d'eau",
+    "Radio cassée",
+    "Couteau suisse",
+    "Conserve",
+    "Batterie externe",
+    "Vêtements",
+    "Machette rouillée"
+  ]
+}

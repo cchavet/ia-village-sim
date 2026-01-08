@@ -3,3 +3,5 @@ __pycache__/
 *.gguf
 *.bin
 .env
+memo.txt
+api.key

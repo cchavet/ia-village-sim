@@ -1,4 +1,4 @@
-from core.config import MAP_LOCATIONS, GRID_SIZE
+from core.config import MAP_LOCATIONS
 
 def get_location_name(pos):
     return MAP_LOCATIONS.get(tuple(pos), f"Route ({pos})")
