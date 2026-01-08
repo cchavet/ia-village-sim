@@ -1,10 +1,24 @@
 # --- CONSTANTES GLOBALES ---
 GRID_SIZE = 5
 
-MAP_LOCATIONS = {
-    (0, 0): "La Forge",
-    (4, 4): "L'Auberge",
-    (2, 2): "La Place",
-    (0, 4): "L'Apothicaire",
-    (4, 0): "La Forêt"
+# Dictionnaire Nom -> Coordonnées [x, y]
+LOCATIONS = {
+    "La Forge": [0, 0],
+    "L'Auberge": [4, 4],
+    "La Place": [2, 2],
+    "L'Apothicaire": [0, 4],
+    "La Forêt": [4, 0]
+}
+
+# Inverse pour retrouver le nom depuis les coordonnées (si besoin)
+MAP_LOCATIONS = {tuple(v): k for k, v in LOCATIONS.items()}
+
+# --- ECONOMIE ---
+STARTING_GOLD = 50
+ITEMS_PRICES = {
+    "Épée": 30,
+    "Potion": 20,
+    "Repas": 15,
+    "Bois": 5,
+    "Fleurs": 5
 }
