@@ -21,6 +21,6 @@ def check_and_pull_model(model_name):
         st.stop()
 
 def get_llm():
-    MODEL_NAME = "mistral-nemo"
+    MODEL_NAME = "llama3.2:1b"
     check_and_pull_model(MODEL_NAME)
     return OllamaLLM(model=MODEL_NAME, temperature=0.7, format="json")

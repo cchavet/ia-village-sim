@@ -6,16 +6,15 @@
             "description": "Sérieux, respecte les procédures. Le leader naturel.",
             "pos": [
                 17,
-                19
+                17
             ],
-            "energy": 40,
+            "energy": 70,
             "inventory": [
                 "Uniforme déchiré"
             ],
             "gold": 0,
             "rel": {
-                "Avion écrasé": 3,
-                "": 0
+                "null": 0
             }
         },
         "Barbie": {
@@ -23,91 +22,45 @@
             "age": 20,
             "description": "Obsédée par son téléphone (inutile ici). Superficielle mais peut surprendre.",
             "pos": [
-                17,
-                20
+                15,
+                16
             ],
-            "energy": 20,
+            "energy": 80,
             "inventory": [
                 "Smartphone (0% batterie)",
                 "Maillot de bain"
             ],
             "gold": 0,
-            "rel": {
-                "Avion écrasé": -5,
-                "Energie": -10,
-                "Météo": -2,
-                "Moi-même": -5
-            }
+            "rel": {}
         },
         "Ken": {
             "role": "Docteur en Électronique",
             "age": 45,
             "description": "Grand inventeur, voyageur expérimenté. Capable de réparer la radio.",
             "pos": [
-                16,
-                20
+                13,
+                18
             ],
-            "energy": 15,
+            "energy": 60,
             "inventory": [
-                "Lunettes cassées",
-                "Radio cassée",
-                "Bouteille d'eau",
-                "Mallette de premiers secours"
+                "Lunettes cassées"
             ],
             "gold": 0,
             "rel": {
-                "Avion écrasé": 2,
-                "Lunettes cassées": 2,
-                "Debris/Affaires (Rouge)": 10,
-                "Radio cassée": 2,
-                "Energie": -5
+                "null": 0
             }
         }
     },
-    "world_time": 22,
+    "world_time": 10,
     "logs": [
-        "22h - **John** (Terre (Marron)) : Je suis épuisé et blessé après l'atterrissage forcé. Je devrais fouiller les débris de l'avion pour trouver des fournitures qui pourraient m'aider à survivre. [Action: FOUILLER]",
-        "22h - **Barbie** (Terre (Marron)) : Je suis perdue et seule sur cette île. Je dois trouver de l'aide ou des survivants. [Action: FOUILLER]",
-        "22h - **Ken** (Débris/Affaires (Rouge)) : Il est dangereux de se déplacer la nuit, je devrais peut-être essayer de réparer la radio pour appeler à l'aide. [Action: UTILISER]",
-        "21h - **John** (Terre (Marron)) : Je suis le seul survivant de l'avion crashé. Il fait nuit et je ne vois pas grand chose autour de moi. Je dois restergroupé pour me protéger des animaux sauvages ou d'autres dangers invisibles dans la nuit. [Action: DORMIR]",
-        "21h - **Barbie** (Terre (Marron)) : Je suis terrifiée mais je dois trouver de l'eau et de la nourriture. Mon smartphone est inutile ici. [Action: SE DEPLACER]",
-        "21h - **Ken** (Débris/Affaires (Rouge)) : Je suis soulagé d'être en vie, mais je dois rester concentré pour trouver de l'aide. Il est dangereux de se déplacer la nuit. [Action: DORMIR]",
-        "20h - **John** (Terre (Marron)) : Il fait nuit et je suis seul sur une île inhabitée après l'écrasement de mon avion. Je dois rester vigilant pour ne pas attirer l'attention d'éventuels prédateurs. [Action: DORMIR]",
-        "20h - **Barbie** (Terre (Marron)) : Il fait nuit et je suis seule sur une île inhabitée. Je dois rester groupée ou dormir pour être en sécurité. [Action: SE DEPLACER]",
-        "20h - **Ken** (Débris/Affaires (Rouge)) : Je suis épuisé et affamé après ce crash. Il fait nuit, je devrais trouver un abri pour dormir. [Action: FOUILLER | 🎁 Trouvé : Mallette de premiers secours !]",
-        "19h - **John** (Terre (Marron)) : Je suis indemne mais je dois vérifier les alentours pour trouver des ressources et des moyens de signaler notre présence. [Action: SE DEPLACER]",
-        "19h - **Barbie** (Terre (Marron)) : Je suis perdue sans mon smartphone, mais je dois trouver de l'aide pour sortir d'ici. [Action: SE DEPLACER]",
-        "19h - **Ken** (Débris/Affaires (Rouge)) : Je dois réparer la radio pour appeler à l'aide. Mais d'abord, je devrais fouiller les environs pour trouver des pièces ou des outils qui pourraient m'aider. [Action: FOUILLER | Rien trouvé...]",
-        "18h - **John** (Terre (Marron)) : Je suis fatigué et blessé mais je dois explorer les environs pour trouver des ressources. La priorité est de réparer la radio pour appeler à l'aide. [Action: SE DEPLACER]",
-        "18h - **Barbie** (Terre (Marron)) : Je suis coincée ici avec juste mon maillot de bain et un smartphone hors service. Je dois trouver des moyens de survivre. [Action: FOUILLER]",
-        "18h - **Ken** (Débris/Affaires (Rouge)) : Je suis Ken et je suis un survivant expérimenté. Ma priorité est de réparer la radio pour appeler les secours. Je dois commencer par fouiller les débris autour de moi. [Action: FOUILLER | Rien trouvé...]",
-        "17h - **John** (Terre (Marron)) : Je dois trouver de l'eau et de la nourriture rapidement. Il faut que je répare la radio pour appeler des secours. [Action: FOUILLER]",
-        "17h - **Barbie** (Terre (Marron)) : Je suis bloquée ici ? Pas de réseau, pas d'électricité... Comment je vais faire sans selfies ni Snapchat ? Je ferais mieux de trouver de l'eau et de la nourriture. [Action: FOUILLER]",
-        "17h - **Ken** (Débris/Affaires (Rouge)) : Il faut que je trouve des pièces pour réparer la radio et essayer de contacter les secours. [Action: FOUILLER | 🎁 Trouvé : Bouteille d'eau !]",
-        "16h - **John** (Débris/Affaires (Rouge)) : Je dois trouver de l'eau et de la nourriture avant toute chose. Ensuite je vais essayer de réparer la radio pour appeler à l'aide. [Action: SE DEPLACER]",
-        "16h - **Barbie** (Terre (Marron)) : Je suis coincée ici sans mon téléphone ! Je dois trouver de l'aide. [Action: FOUILLER]",
-        "16h - **Ken** (Débris/Affaires (Rouge)) : Je suis soulagé d'être en vie mais il faut que je trouve de l'aide et des ressources. [Action: FOUILLER | 🎁 Trouvé : Radio cassée !]",
-        "15h - **John** (Débris/Affaires (Rouge)) : Je dois inspecter les débris pour trouver des ressources qui pourraient m'aider à survivre. [Action: FOUILLER | Rien trouvé...]",
-        "15h - **Barbie** (Terre (Marron)) : Je suis coincée ici avec juste un maillot de bain et un smartphone cassé. Il faut que je trouve de l'aide. [Action: FOUILLER]",
-        "15h - **Ken** (Débris/Affaires (Rouge)) : Je suis épuisé par ce crash mais je dois trouver des moyens de me sortir de cette île. [Action: FOUILLER | Rien trouvé...]",
-        "14h - **John** (Débris/Affaires (Rouge)) : Je dois fouiller les débris pour trouver des ressources utiles et réparer la radio. [Action: FOUILLER | Rien trouvé...]",
-        "14h - **Barbie** (Terre (Marron)) : Je suis coincée ici sans mon téléphone ? Comment vais-je survivre sans liker mes photos sur Insta? [Action: FOUILLER]",
-        "14h - **Ken** (Terre (Marron)) : Je dois trouver des ressources pour réparer la radio et appeler les secours. Je vais commencer à explorer l'île. [Action: SE DEPLACER]",
-        "13h - **John** (Terre (Marron)) : Je dois trouver un moyen de contacter les secours. La radio est notre meilleure chance. [Action: SE DEPLACER]",
-        "13h - **Barbie** (Terre (Marron)) : Je suis perdue ici sans mon téléphone ! Je devrais fouiller les environs pour trouver de l'aide. [Action: SE DEPLACER]",
-        "13h - **Ken** (Terre (Marron)) : Je dois trouver des survivants et vérifier s'il y a des ressources pour réparer la radio. [Action: SE DEPLACER]",
-        "12h - **John** (Terre (Marron)) : Je suis soulagé d'être vivant mais je dois vite trouver des moyens de signaler notre présence et de nous sortir de cette situation. [Action: FOUILLER]",
-        "12h - **Barbie** (Terre (Marron)) : Je suis coincée ici avec seulement mon téléphone hors service et un maillot de bain. Je dois trouver de l'eau potable et des moyens de signaler ma présence. [Action: FOUILLER]",
-        "12h - **Ken** (Terre (Marron)) : Je suis soulagé d'être en vie, mais je dois réparer la radio pour appeler à l'aide. Je vais commencer par explorer les environs. [Action: SE DEPLACER]",
-        "11h - **John** (Terre (Marron)) : Je suis soulagé d'être en vie mais je dois trouver de l'aide. La priorité est de réparer la radio pour appeler des secours. [Action: FOUILLER]",
-        "11h - **Barbie** (Terre (Marron)) : Je suis perdue, je n'ai pas de réseau et mon téléphone est en train de mourir... Il faut que je trouve un moyen de me sortir d'ici. [Action: FOUILLER]",
-        "11h - **Ken** (Terre (Marron)) : Je suis soulagé d'être en vie mais je dois trouver de l'aide pour réparer la radio. [Action: SE DEPLACER]",
-        "10h - **John** (Terre (Marron)) : Je dois trouver de l'eau et de la nourriture pour tenir le coup. Il faut aussi que je répare cette radio. [Action: FOUILLER]",
-        "10h - **Barbie** (Terre (Marron)) : Je suis sur une île déserte avec juste un maillot de bain et un smartphone mort. Je dois trouver de l'eau et de la nourriture, et réparer la radio pour appeler à l'aide. [Action: FOUILLER]",
-        "10h - **Ken** (Terre (Marron)) : Je dois inspecter les débris de l'avion pour trouver des pièces utiles à réparer la radio. [Action: FOUILLER]",
-        "9h - **John** (Terre (Marron)) : Je suis soulagé d'être vivant, mais je dois rester calme et efficace. Ma priorité est de réparer la radio pour appeler des secours. [Action: FOUILLER]",
-        "9h - **Barbie** (Terre (Marron)) : Je suis perdue et effrayée mais je dois rester forte pour survivre. Mon téléphone est hors service, je dois trouver un moyen de contacter les secours. [Action: FOUILLER]",
-        "9h - **Ken** (Terre (Marron)) : Je dois d'abord trouver des ressources pour réparer la radio et ensuite explorer l'île pour trouver de l'aide. [Action: FOUILLER]"
+        "📖 **CHRONIQUE (10h)**\n\nLa nuit était tombée sur cette île maudite comme un linceul de plomb. L'odeur salée de la mort et du désespoir flottait dans l'air, se mêlant à celle, âcre, de la peur. Ici, la civilisation n'était qu'un vague souvenir, et la seule loi était celle du plus fort, ou plutôt, du plus rusé.\n\n\n---",
+        "**10h - John** [🔋70% | 📍[17, 17] | 🎒1]\n\n*Je dois essayer de réparer la radio. C'est le seul moyen de communiquer avec l'avion. J'ai besoin d'un peu plus d'énergie avant de le faire.*\n\n> 🔧 PARLER ",
+        "**10h - Barbie** [🔋80% | 📍[15, 16] | 🎒2]\n\n*J'ai besoin de mon téléphone pour appeler l'aérodrome, mais c'est toujours enfoncé... Je devrais chercher un moyen de le débarrasser.*\n\n> 🔧 FOUILLER ",
+        "**10h - Ken** [🔋60% | 📍[13, 18] | 🎒1]\n\n*Je dois trouver une solution pour réparer la radio. Les Lunettes cassées ne sont pas suffisantes.*\n\n> 🔧 FOUILLER ",
+        "📖 **CHRONIQUE (9h)**\n\nLa pluie fouettait mon visage comme les remords. L'épave de cet avion, un amas de métal tordu, était tout ce qui restait de mon ancienne vie. Maintenant, c'était juste moi, le sable froid sous mes bottes, et une île qui semblait murmurer des secrets sinistres dans le vent. Survivre ici... ça allait être un vrai film noir, un acte désespéré.\n\n\n---",
+        "**9h - John** [🔋75% | 📍[17, 17] | 🎒1]\n\n*Je dois trouver de l'eau avant de m'enfuir.*\n\n> 🔧 FOUILLER ",
+        "**9h - Barbie** [🔋85% | 📍[16, 17] | 🎒2]\n\n*Je suis dégonflée... Mon téléphone devrait être plus pratique !*\n\n> 🔧 FOUILLER  | Rien trouvé...",
+        "**9h - Ken** [🔋65% | 📍[14, 19] | 🎒1]\n\n*Je dois trouver des ressources pour réparer la radio, mais il est trop chaud ici.*\n\n> 🔧 FOUILLER "
     ],
-    "weather": "Ensoleillé ☀️"
+    "weather": "Ensoleillé"
 }

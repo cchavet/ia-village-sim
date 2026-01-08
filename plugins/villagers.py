@@ -29,19 +29,23 @@ def agent_turn(llm, name, villagers_state, world_time, weather, seed, terrain_na
     {consigne}
 
     ACTIONS POSSIBLES:
-    - "SE DEPLACER": Changer de case [x, y]. (Max 1 case de distance).
+    - "SE DEPLACER": Changer de case adjacente [x, y] (Diagonale OK).
     - "FOUILLER": Chercher des objets (efficace sur les zones '?' rouges ou 'A' crash).
     - "DORMIR": Récupérer énergie.
     - "PARLER": Discuter avec voisins.
     - "UTILISER": Utiliser un objet de l'inventaire.
 
-    Réponds UNIQUEMENT en JSON:
+    Réponds UNIQUEMENT en JSON. Sois CRÉATIF et VARIÉ.
+    
+    Exemple de format attendu (remplace les valeurs !) :
     {{
-        "pensee": "Ta réflexion de survivant (peur, espoir, faim...)",
-        "action": "SE DEPLACER" | "FOUILLER" | "DORMIR" | "PARLER",
-        "dest": [x, y], // Tes nouvelles coordonnées (Obligatoire si action=SE DEPLACER, sinon garder actuelles)
-        "reaction": {{"target": "Nom", "delta": 2}} // Optionnel
+        "pensee": "J'ai soif... Je devrais chercher de l'eau vers le nord.",
+        "action": "SE DEPLACER",
+        "dest": [x, y],
+        "reaction": null
     }}
+    
+    AVERTISSEMENT : NE RECOPIE PAS L'EXEMPLE. Invente une nouvelle pensée à chaque fois basée sur ton état.
     """
     try:
         res = llm.invoke(prompt)

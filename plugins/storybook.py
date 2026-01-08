@@ -1,92 +1,154 @@
 import os
-import google.generativeai as genai
+from google import genai
 from datetime import datetime
+import subprocess
 
 STORY_DIR = "story"
 os.makedirs(STORY_DIR, exist_ok=True)
 
-def init_gemini():
+def get_gemini_client():
     try:
         if not os.path.exists("api.key"):
-            print("api.key not found.")
-            return False
-            
+            return None
         with open("api.key", "r") as f:
             api_key = f.read().strip()
-            
-        genai.configure(api_key=api_key)
-        return True
+        client = genai.Client(api_key=api_key)
+        return client
     except Exception as e:
         print(f"Gemini Init Error: {e}")
-        return False
+        return None
 
-def generate_chapter(day_num, logs, survivors_state):
+def prepare_prompt_locally(events):
     """
-    Génère un chapitre BD Adulte basé sur les logs de la journée.
+    Utilise le modèle local (Gemma 2 / Llama) pour synthétiser les logs.
     """
-    if not init_gemini():
-        return "Erreur: Clé API manquante."
+    try:
+        metaprompt = f"""
+        Tu es un assistant scénariste. Voici des logs bruts d'un jeu de survie :
+        {events}
+        
+        Tache : Résume ces actions en 4 lignes maximum. Identifie tension/danger.
+        Format : "Actions: ..., Ambiance: ..."
+        """
+        res = subprocess.run(
+            ["ollama", "run", "llama3.2:1b", metaprompt], 
+            capture_output=True, text=True, encoding='utf-8', shell=True
+        )
+        return res.stdout.strip()
+    except Exception:
+        return events # Fallback brut
 
-    # Préparation du contexte
-    survivors_desc = "\n".join([f"- {name} ({data['role']}): {data.get('description', '')}" for name, data in survivors_state.items()])
-    recent_logs = "\n".join(logs[-50:]) # On prend les 50 derniers logs pour le contexte immédiat
-    
+def narrate_turn_local(events):
+    """
+    Récit de secours via Llama local.
+    """
+    try:
+        # On utilise le même pré-prompt ou un prompt simplifié
+        prompt = f"""
+        Tu es le Narrateur d'un jeu de survie sombre.
+        LOGS:
+        {events}
+        
+        Tache : Raconte ce qui se passe en 2 phrases max. Ambiance tendue.
+        """
+        res = subprocess.run(
+            ["ollama", "run", "llama3.2:1b", prompt], 
+            capture_output=True, text=True, encoding='utf-8', shell=True
+        )
+        return res.stdout.strip()
+    except Exception as e:
+        return f"(Erreur Local: {e})"
+
+def narrate_turn_stream(events):
+    """
+    Récit d'ambiance via Gemini (Cloud) - Mode Streaming.
+    Renvoie un générateur.
+    """
+    client = get_gemini_client()
+    # Si pas de client ou erreur init, fallback direct
+    if not client:
+        yield narrate_turn_local(events)
+        return
+
+    context = prepare_prompt_locally(events)
     prompt = f"""
-    CONTEXTE: Simulation de survie "Crash sur l'Île". Jour {day_num}.
-    PERSONNAGES:
-    {survivors_desc}
-    
-    EVENEMENTS RECENTS (Logs):
-    {recent_logs}
-    
-    TACHE:
-    Écris le Chapitre {day_num} de cette histoire sous forme de SCÉNARIO DE BANDE DESSINÉE (Graphic Novel) pour adultes.
-    STYLE: Noir, Réaliste, "Gritty", Introspectif. Ne pas hésiter sur la difficulté de la survie.
-    
-    FORMAT:
-    Génère 2 "PAGES" de BD. Pour chaque page :
-    - Titre de la Page.
-    - 4 à 6 Cases (Panels).
-    - Pour chaque Case : 
-      - [IMAGE PROMPT]: Description visuelle TRÈS DÉTAILLÉE pour un générateur d'image (cadrage, lumière, action, expressions).
-      - RÉCIT/DIALOGUE: Le texte de la case.
-      
-    SORTIE: Markdown brut.
+    CONTEXTE: Jeu Survival "Crash sur l'Île".
+    RESUME: {context}
+    TACHE: Narrateur style Film Noir / Survie.
+    CRITIQUE: Un seul paragraphe court (< 3 phrases). Immersif.
     """
     
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-        
-        filename = os.path.join(STORY_DIR, f"chapter_{day_num}.md")
-        with open(filename, "w", encoding='utf-8') as f:
-            f.write(f"# CHAPITRE {day_num}\n\n")
-            f.write(response.text)
-            
-        return f"Chapitre {day_num} généré dans {filename}"
+        # Utilisation de generate_content_stream pour le V1 SDK
+        response_stream = client.models.generate_content_stream(
+            model='gemini-2.0-flash-exp',
+            contents=prompt
+        )
+        for chunk in response_stream:
+            if chunk.text:
+                yield chunk.text
     except Exception as e:
-        return f"Erreur Génération: {e}"
+        yield f"⚠️ *Relais Local...* "
+        # Fallback synchrone (pas de stream token par token pour Ollama via subprocess)
+        yield narrate_turn_local(events)
 
 def narrate_turn(events):
     """
-    Transforme les logs bruts d'un tour en un court récit d'ambiance.
+    Récit d'ambiance via Gemini (Cloud).
     """
-    if not init_gemini():
+    client = get_gemini_client()
+    if not client:
         return None
 
+    context = prepare_prompt_locally(events)
     prompt = f"""
-    CONTEXTE: Survival "Crash sur l'Île".
-    EVENEMENTS DU MOMENT:
-    {events}
-    
-    TACHE: Agis comme un narrateur de film de survie/noir.
-    Synthétise ces événements en un seul paragraphe court (max 3 phrases) et immersif.
-    Mets l'accent sur l'atmosphère, la tension, ou les émotions.
+    CONTEXTE: Jeu Survival "Crash sur l'Île".
+    RESUME: {context}
+    TACHE: Narrateur style Film Noir / Survie.
+    CRITIQUE: Un seul paragraphe court (< 3 phrases). Immersif.
     """
     
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-exp',
+            contents=prompt
+        )
         return response.text.strip()
     except Exception as e:
-        return f"(Erreur Narrateur: {e})"
+        if "429" in str(e):
+            return None
+        return f"(Pause Narrateur... {str(e)[:50]})"
+
+def generate_chapter(day_num, logs, survivors_state):
+    """
+    Génère un chapitre BD quotidien.
+    """
+    client = get_gemini_client()
+    if not client:
+        return "Erreur Clé API"
+
+    survivors_desc = "\n".join([f"- {name}: {data['role']}" for name, data in survivors_state.items()])
+    recent_logs = "\n".join(logs[-50:])
+    
+    prompt = f"""
+    CONTEXTE: Survival Jour {day_num}.
+    CAST: {survivors_desc}
+    LOGS: {recent_logs}
+    Output: SCENARIO BD ADULTE/NOIR. 2 Pages.
+    Pour chaque case: [IMAGE PROMPT] + DIALOGUE.
+    """
+    
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-exp',
+            contents=prompt
+        )
+        
+        filename = os.path.join(STORY_DIR, f"chapter_{day_num}.md")
+        with open(filename, "w", encoding='utf-8') as f:
+             f.write(f"# CHAPITRE {day_num}\n\n{response.text}")
+             
+        return f"Chapitre écrit: {filename}"
+        
+    except Exception as e:
+        return f"Erreur Chapitre: {e}"

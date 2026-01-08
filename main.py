@@ -58,7 +58,7 @@ def get_terrain_at(x, y):
     return "Océan"
 
 # --- MOTEUR DE JEU ---
-def run_simulation_step():
+def run_simulation_step(placeholder=None):
     st.session_state.world_time = (st.session_state.world_time + 1) % 24
     st.session_state.weather = weather.update_weather(st.session_state.weather)
     
@@ -92,11 +92,20 @@ def run_simulation_step():
         )
         
         # 2. Application Mouvement
-        # Vérif bornes
-        dx, dy = decision['dest']
-        dx = max(0, min(GRID_SIZE-1, dx))
-        dy = max(0, min(GRID_SIZE-1, dy))
-        v['pos'] = [dx, dy]
+        # Vérif bornes via déplacement unitaire
+        dest_x, dest_y = decision['dest']
+        curr_x, curr_y = v['pos']
+        
+        move_x = max(-1, min(1, dest_x - curr_x))
+        move_y = max(-1, min(1, dest_y - curr_y))
+        
+        new_x = curr_x + move_x
+        new_y = curr_y + move_y
+        
+        new_x = max(0, min(GRID_SIZE-1, new_x))
+        new_y = max(0, min(GRID_SIZE-1, new_y))
+        
+        v['pos'] = [new_x, new_y]
         
         # Energie
         v['energy'] = max(0, v['energy'] - 5)
@@ -105,7 +114,7 @@ def run_simulation_step():
         
         # 3. Actions Spéciales (Fouille)
         action_msg = ""
-        if decision['action'] == "FOUILLER" and "?" in SEED['map_layout'][dy][dx]:
+        if decision['action'] == "FOUILLER" and "?" in SEED['map_layout'][new_y][new_x]:
              import random
              if random.random() < 0.3: # 30% chance
                  item = random.choice(SEED['loot_table'])
@@ -123,15 +132,26 @@ def run_simulation_step():
         log_entry = f"**{current_time}h - {name}** {stats_str}\n\n*{decision['pensee']}*\n\n> 🔧 {decision['action']} {action_msg}"
         step_logs.append(log_entry)
 
-    # --- NARRATEUR GEMINI (Temps Réel) ---
-    # On envoie les logs bruts à Gemini pour une synthèse d'ambiance
+    # --- NARRATEUR GEMINI (Temps Réel & Streaming) ---
     if step_logs:
-        narrative = storybook.narrate_turn(step_logs)
-        if narrative:
-            # On insère le récit EN PREMIER pour qu'il soit lu avant les détails (ou après ?)
-            # L'utilisateur veut un "Storybook", donc on le met en évidence.
-            narrative_block = f"📖 **CHRONIQUE ({current_time}h)**\n\n{narrative}\n\n---"
+        narrative_text = ""
+        # Si un placeholder est fourni (Mode streaming)
+        if placeholder:
+            placeholder.markdown(f"✍️ *Le narrateur observe...*")
+            
+        stream_gen = storybook.narrate_turn_stream(step_logs)
+        
+        for chunk in stream_gen:
+             if chunk:
+                 narrative_text += chunk
+                 if placeholder:
+                     placeholder.markdown(f"📖 **CHRONIQUE ({current_time}h)**\n\n{narrative_text} ▌")
+        
+        if narrative_text:
+            narrative_block = f"📖 **CHRONIQUE ({current_time}h)**\n\n{narrative_text}\n\n---"
             step_logs.insert(0, narrative_block)
+            if placeholder:
+                placeholder.empty() # On nettoie car ça va être ajouté aux logs permanents
 
     # Historique Global (Lore)
     st.session_state.logs = step_logs + st.session_state.logs
@@ -259,9 +279,11 @@ with col_logs:
 
 if auto_run:
     time.sleep(2)
-    run_simulation_step()
+    narrative_spot = col_logs.empty()
+    run_simulation_step(narrative_spot)
     st.rerun()
 
 if st.button("Tour Suivant"):
-    run_simulation_step()
+    narrative_spot = col_logs.empty()
+    run_simulation_step(narrative_spot)
     st.rerun()
