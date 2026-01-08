@@ -8,7 +8,7 @@
                 16,
                 16
             ],
-            "energy": 25,
+            "energy": 30,
             "inventory": [
                 "Uniforme déchiré"
             ],
@@ -25,7 +25,7 @@
                 16,
                 17
             ],
-            "energy": 35,
+            "energy": 55,
             "inventory": [
                 "Smartphone (0% batterie)",
                 "Maillot de bain",
@@ -44,7 +44,7 @@
                 16,
                 17
             ],
-            "energy": 15,
+            "energy": 35,
             "inventory": [
                 "Lunettes cassées"
             ],
@@ -54,8 +54,14 @@
             }
         }
     },
-    "world_time": 19,
+    "world_time": 21,
     "logs": [
+        "**21h - John** [🔋30% | 📍[16, 16] | 🎒1]\n\n*L'épuisement me gagne et mes réflexes s'émoussent. Selon le protocole de survie, je ne dois pas prendre de décisions critiques dans cet état, surtout sous cet orage. Je dois impérativement récupérer mes forces pour diriger les recherches au lever du jour.*\n\n> 🔧 DORMIR ",
+        "**21h - Barbie** [🔋55% | 📍[16, 17] | 🎒5]\n\n*Sérieusement ? Un orage ? Ma permanente ne va jamais tenir et j'ai l'impression d'être dans un mauvais remake de 'Lost' sans aucun filtre Instagram... Je suis épuisée, et sans batterie, ce miroir noir est juste déprimant.*\n\n> 🔧 DORMIR ",
+        "**21h - Ken** [🔋35% | 📍[16, 17] | 🎒1]\n\n*25% d'énergie... mes circuits internes sont à plat. Avec cet orage et mes lunettes brisées, je n'y vois goutte dans ces débris. Je dois impérativement recharger mes batteries avant de tenter une réparation radio demain.*\n\n> 🔧 DORMIR ",
+        "**20h - John** [🔋20% | 📍[16, 16] | 🎒1]\n\n*Vingt-cinq pour cent d'énergie... c'est critique. Cependant, le protocole impose de sécuriser les ressources prioritaires. Je dois fouiller la carlingue pour trouver la balise ou des vivres avant que l'orage ne sature la zone.*\n\n> 🔧 FOUILLER ",
+        "**20h - Barbie** [🔋45% | 📍[16, 17] | 🎒5]\n\n*Omg, cet orage est littéralement en train de ruiner mon brushing et ce sable est une agression pour mon exfoliation. Puisque mon téléphone est aussi mort que ma carrière sans Wi-Fi, je vais faire une sieste beauté forcée. Ken a intérêt à monter la garde s'il veut que je l'identifie sur ma prochaine photo imaginaire.*\n\n> 🔧 DORMIR ",
+        "**20h - Ken** [🔋25% | 📍[16, 17] | 🎒1]\n\n*Ma vue est brouillée sans mes verres et ce tonnerre assourdissant m'épuise... Avec si peu d'énergie, je risque le malaise avant même de trouver un condensateur. Je dois impérativement recharger mes batteries internes si je veux espérer bricoler un émetteur demain.*\n\n> 🔧 DORMIR ",
         "**19h - John** [🔋25% | 📍[16, 16] | 🎒1]\n\n*Le protocole de survie exige que je sécurise d'abord les fournitures d'urgence de la carlingue. Mon énergie baisse, mais je ne peux pas me reposer sans avoir fouillé les décombres pour trouver la balise de détresse ou de l'eau.*\n\n> 🔧 FOUILLER ",
         "**19h - Barbie** [🔋35% | 📍[16, 17] | 🎒5]\n\n*Sérieusement, ce sable est une agression totale pour ma pédicure. Mon téléphone est toujours dans le coma, mais j'ai vu des morceaux de métal brillant dans ce tas de valises... C'est peut-être ce qu'il faut pour que cette radio redevienne vintage et fonctionnelle.*\n\n> 🔧 FOUILLER  | 🎁 Trouvé : Bouteille d'eau !",
         "**19h - Ken** [🔋15% | 📍[16, 17] | 🎒1]\n\n*Mes lunettes sont en morceaux, mais mon instinct d'ingénieur reste intact. Avec seulement 20% d'énergie, je ne ferai pas de vieux os si je ne trouve pas de quoi bricoler un signal ou me restaurer dans ces valises éventrées.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
@@ -98,5 +104,5 @@
         "**9h - Barbie** [🔋85% | 📍[16, 17] | 🎒2]\n\n*Je suis dégonflée... Mon téléphone devrait être plus pratique !*\n\n> 🔧 FOUILLER  | Rien trouvé...",
         "**9h - Ken** [🔋65% | 📍[14, 19] | 🎒1]\n\n*Je dois trouver des ressources pour réparer la radio, mais il est trop chaud ici.*\n\n> 🔧 FOUILLER "
     ],
-    "weather": "Ensoleillé"
+    "weather": "Orageux ⛈️"
 }

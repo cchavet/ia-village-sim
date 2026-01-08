@@ -95,39 +95,39 @@ def extract_facts_ai(logs_text):
     except Exception:
         return []
 
-def narrate_turn_stream(events, previous_context="", key_facts=""):
+def narrate_page_segment(events, previous_context="", key_facts=""):
     """
-    Récit d'ambiance via Gemini (Cloud) - Mode Streaming.
-    Renvoie un générateur.
-    previous_context : Le texte des derniers tours pour éviter les répétitions.
-    key_facts : Liste des faits marquants (Loot, blessures...) à garder en tête.
+    Génère un segment narratif (partie de page) via Gemini.
+    Mode : Roman / Littéraire.
     """
     client = get_gemini_client()
-    # Si pas de client ou erreur init, fallback direct
     if not client:
         yield narrate_turn_local(events)
         return
 
-    context = prepare_prompt_locally(events)
+    context = prepare_prompt_ai(events)
     prompt = f"""
-    CONTEXTE: Jeu Survival "Crash sur l'Île".
+    CONTEXTE: Jeu Survival "Crash sur l'Île". Style : Roman d'Aventure sombre / Realiste.
     
-    FAITS IMPORTANTS (Mémoire) :
+    MEMOIRE (Faits Marquants) :
     {key_facts}
     
     PRECEDEMMENT (Style et Ton) :
     {previous_context}
     
-    NOUVEAUX FAITS (Résumé) : 
+    NOUVELLES ACTIONS (À Raconter) : 
     {context}
     
-    TACHE: Écris la suite. Narrateur style Film Noir / Survie.
-    CRITIQUE: Un seul paragraphe court (< 3 phrases). Immersif.
-    IMPORTANT: NE PAS RÉPÉTER CE QUI A ÉTÉ DIT PRÉCÉDEMMENT. FAIS AVANCER L'HISTOIRE.
+    TACHE: Écris la suite du roman.
+    CONSIGNES :
+    - Fais un VRAI paragraphe de roman (environ 10-15 lignes).
+    - Décris l'atmosphère, les ressentis, le décor.
+    - Prends le temps de poser l'ambiance.
+    - NE RÉPÈTE PAS ce qui a déjà été dit.
+    - Sois littéraire, pas juste factuel.
     """
     
     try:
-        # Utilisation de generate_content_stream pour le V1 SDK
         response_stream = client.models.generate_content_stream(
             model='models/gemini-3-flash-preview',
             contents=prompt
@@ -137,7 +137,6 @@ def narrate_turn_stream(events, previous_context="", key_facts=""):
                 yield chunk.text
     except Exception as e:
         yield f"⚠️ *Relais Local...* "
-        # Fallback synchrone (pas de stream token par token pour Ollama via subprocess)
         yield narrate_turn_local(events)
 
 def narrate_turn(events):
