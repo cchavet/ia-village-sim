@@ -1,74 +1,95 @@
 import streamlit as st
 from langchain_community.llms import Ollama
 import json
+import random
+import pandas as pd
 
 # --- CONFIGURATION ---
-st.set_page_config(page_title="IA Village Engine", layout="wide")
-
-# Utilisation de Llama 3.2 1B pour la vitesse sur ta 1080 Ti
+st.set_page_config(page_title="IA Village Life Cycle", layout="wide")
 llm = Ollama(model="llama3.2:1b", temperature=0.7)
+
+# --- CONSTANTES ---
+GRID_SIZE = 5
+MAP_LOCATIONS = {
+    (0, 0): "La Forge", (4, 4): "L'Auberge", (2, 2): "La Place",
+    (0, 4): "L'Apothicaire", (4, 0): "La Forêt"
+}
 
 # --- INITIALISATION ---
 if 'villagers' not in st.session_state:
     st.session_state.villagers = {
-        "Elora": {"role": "Apothicaire", "traits": "Mystérieuse, calme", "memoire": [], "faim": 100},
-        "Kael": {"role": "Forgeron", "traits": "Bourru, protecteur", "memoire": [], "faim": 100},
-        "Lila": {"role": "Aubergiste", "traits": "Joviale, pipelette", "memoire": [], "faim": 100}
+        "Elora": {"role": "Apothicaire", "pos": [0, 4], "home": [0, 4], "energy": 100, "rel": {"Kael": 0, "Lila": 10}},
+        "Kael": {"role": "Forgeron", "pos": [0, 0], "home": [1, 0], "energy": 100, "rel": {"Elora": 0, "Lila": -5}},
+        "Lila": {"role": "Aubergiste", "pos": [4, 4], "home": [4, 3], "energy": 100, "rel": {"Elora": 20, "Kael": 0}}
     }
-if 'world_step' not in st.session_state:
-    st.session_state.world_step = 0
+if 'world_time' not in st.session_state:
+    st.session_state.world_time = 8  # Début à 8h du matin
+if 'logs' not in st.session_state:
+    st.session_state.logs = []
 
-# --- LOGIQUE DE SIMULATION ---
-def simulate_step(name):
+# --- LOGIQUE IA ---
+def agent_turn(name):
     v = st.session_state.villagers[name]
+    heure = st.session_state.world_time
+    est_nuit = heure >= 22 or heure <= 6
     
-    # On construit un prompt qui donne du contexte
+    status = "fatigué" if v['energy'] < 30 else "en forme"
+    consigne_nuit = "Il fait nuit, tu devrais aller dormir chez toi." if est_nuit else "Il fait jour, travaille ou socialise."
+
     prompt = f"""
-    Tu es {name}, {v['role']}. Traits: {v['traits']}.
-    Historique récent: {v['memoire'][-3:] if v['memoire'] else "Début de journée."}
+    Tu es {name}. Heure: {heure}h. Énergie: {v['energy']}/100 ({status}).
+    Position: {v['pos']}. Maison: {v['home']}.
+    {consigne_nuit}
     
-    Réponds UNIQUEMENT en JSON avec ce format:
+    Réponds en JSON:
     {{
-        "pensee": "ce que tu penses intérieurement",
-        "action": "ce que tu fais concrètement dans le village"
+        "pensee": "...",
+        "action": "DORMIR" ou "TRAVAILLER" ou "MARCHER",
+        "dest": [x, y]
     }}
     """
-    
     try:
-        response = llm.invoke(prompt)
-        # Nettoyage sommaire pour extraire le JSON
-        start = response.find('{')
-        end = response.rfind('}') + 1
-        data = json.loads(response[start:end])
+        res = llm.invoke(prompt)
+        data = json.loads(res[res.find('{'):res.rfind('}')+1])
         return data
     except:
-        return {"pensee": "Je suis un peu perdu...", "action": "Rêvasse près du puits"}
+        return {"pensee": "Je plane...", "action": "RIEN", "dest": v['pos']}
 
 # --- INTERFACE ---
-st.title("🏘️ Moteur de Simulation de Vie")
+st.title("🌙 Village IA : Cycle de Vie")
 
-# Barre latérale pour le statut du monde
+# Sidebar Status
 with st.sidebar:
-    st.header("🌍 État du Monde")
-    st.write(f"Tour de simulation : {st.session_state.world_step}")
-    if st.button("🔄 Simuler un tour", use_container_width=True):
+    st.header(f"⏰ {st.session_state.world_time}:00")
+    if st.session_state.world_time >= 22 or st.session_state.world_time <= 6:
+        st.warning("🌙 Il fait nuit...")
+    else:
+        st.success("☀️ Il fait jour")
+    
+    if st.button("⏭️ Passer à l'heure suivante", use_container_width=True):
+        st.session_state.world_time = (st.session_state.world_time + 1) % 24
         for name in st.session_state.villagers:
-            res = simulate_step(name)
-            st.session_state.villagers[name]['memoire'].append(res['action'])
-        st.session_state.world_step += 1
-
-# Affichage des cartes des personnages
-cols = st.columns(len(st.session_state.villagers))
-
-for i, (name, data) in enumerate(st.session_state.villagers.items()):
-    with cols[i]:
-        st.subheader(name)
-        st.caption(data['role'])
-        
-        # Affichage du dernier souvenir / pensée
-        if data['memoire']:
-            st.success(f"**Action:** {data['memoire'][-1]}")
+            decision = agent_turn(name)
+            v = st.session_state.villagers[name]
             
-        with st.expander("Voir l'historique"):
-            for m in reversed(data['memoire']):
-                st.write(f"- {m}")
+            # Application des conséquences
+            v['pos'] = decision['dest']
+            if decision['action'] == "DORMIR" and v['pos'] == v['home']:
+                v['energy'] = min(100, v['energy'] + 20)
+            else:
+                v['energy'] = max(0, v['energy'] - 10)
+            
+            st.session_state.logs.insert(0, f"{st.session_state.world_time}h - **{name}** : {decision['pensee']}")
+
+# Affichage de la carte
+grid = [["" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+for (x, y), label in MAP_LOCATIONS.items(): grid[y][x] = f"📍{label}"
+for name, data in st.session_state.villagers.items():
+    x, y = data['pos']
+    grid[y][x] += f" \n 👤{name} ({data['energy']}⚡)"
+
+st.table(pd.DataFrame(grid))
+
+st.subheader("📜 Journal de vie")
+for log in st.session_state.logs[:8]:
+    st.write(log)
