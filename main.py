@@ -83,7 +83,7 @@ def run_simulation_step():
         
         # 4. Relations
         if decision['reaction']:
-           relations.update_relations(v, decision['reaction'])
+           relations.update_relationships(v, decision)
         
         # Log
         log_entry = f"{current_time}h - **{name}** : {decision['pensee']} [Action: {decision['action']}{action_msg}]"
