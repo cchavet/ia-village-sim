@@ -1,88 +1,74 @@
 import streamlit as st
-from langchain_ollama import OllamaLLM
-import time
-import subprocess
+from langchain_community.llms import Ollama
+import json
 
 # --- CONFIGURATION ---
-st.set_page_config(page_title="IA Village Simulator", layout="wide")
+st.set_page_config(page_title="IA Village Engine", layout="wide")
 
-# --- VÉRIFICATION DU MODÈLE ---
-def check_and_pull_model(model_name):
-    """Vérifie si le modèle Ollama est disponible, sinon le télécharge."""
-    try:
-        # Liste les modèles locaux
-        result = subprocess.run(["ollama", "list"], capture_output=True, text=True, encoding='utf-8')
-        if model_name not in result.stdout:
-            st.info(f"Le modèle '{model_name}' n'est pas trouvé localement. Téléchargement en cours...")
-            with st.spinner(f"Téléchargement de {model_name} (cela peut prendre quelques minutes)..."):
-                # Télécharge le modèle
-                subprocess.run(["ollama", "pull", model_name], check=True)
-            st.success(f"Modèle '{model_name}' téléchargé avec succès !")
-    except FileNotFoundError:
-        st.error("Ollama n'est pas installé ou n'est pas dans le PATH. Veuillez installer Ollama : https://ollama.com")
-        st.stop()
-    except Exception as e:
-        st.error(f"Erreur lors de la gestion du modèle Ollama : {e}")
-        st.stop()
+# Utilisation de Llama 3.2 1B pour la vitesse sur ta 1080 Ti
+llm = Ollama(model="llama3.2:1b", temperature=0.7)
 
-MODEL_NAME = "llama3.2:1b"
-check_and_pull_model(MODEL_NAME)
-llm = OllamaLLM(model=MODEL_NAME)
-
-# --- INITIALISATION DU VILLAGE ---
+# --- INITIALISATION ---
 if 'villagers' not in st.session_state:
-    st.session_state.villagers = [
-        {"nom": "Elora", "role": "Apothicaire", "traits": "Calme, herboriste, un peu mystérieuse.", "etat": "Croit que la forêt lui parle.", "logs": []},
-        {"nom": "Kael", "role": "Forgeron", "traits": "Bourru, travailleur, déteste le bruit inutile.", "etat": "Fatigué par la chaleur de la forge.", "logs": []},
-        {"nom": "Lila", "role": "Aubergiste", "traits": "Joviale, sait tout sur tout le monde.", "etat": "Prépare l'arrivée de voyageurs.", "logs": []}
-    ]
-if 'history' not in st.session_state:
-    st.session_state.history = []
+    st.session_state.villagers = {
+        "Elora": {"role": "Apothicaire", "traits": "Mystérieuse, calme", "memoire": [], "faim": 100},
+        "Kael": {"role": "Forgeron", "traits": "Bourru, protecteur", "memoire": [], "faim": 100},
+        "Lila": {"role": "Aubergiste", "traits": "Joviale, pipelette", "memoire": [], "faim": 100}
+    }
+if 'world_step' not in st.session_state:
+    st.session_state.world_step = 0
 
-# --- LOGIQUE IA ---
-def generate_life_step(villager):
+# --- LOGIQUE DE SIMULATION ---
+def simulate_step(name):
+    v = st.session_state.villagers[name]
+    
+    # On construit un prompt qui donne du contexte
     prompt = f"""
-    Tu es {villager['nom']}, le {villager['role']}. 
-    Personnalité: {villager['traits']}
-    Contexte actuel: {villager['etat']}
+    Tu es {name}, {v['role']}. Traits: {v['traits']}.
+    Historique récent: {v['memoire'][-3:] if v['memoire'] else "Début de journée."}
     
-    Décris en une phrase courte ton action actuelle dans le village ou une pensée.
-    Réponds directement par l'action, sans introduction.
+    Réponds UNIQUEMENT en JSON avec ce format:
+    {{
+        "pensee": "ce que tu penses intérieurement",
+        "action": "ce que tu fais concrètement dans le village"
+    }}
     """
-    response = llm.invoke(prompt)
-    return response.strip()
-
-# --- INTERFACE UI ---
-st.title("🏘️ Simulation de Village IA")
-
-col1, col2 = st.columns([1, 2])
-
-with col1:
-    st.header("Habitants")
-    for v in st.session_state.villagers:
-        with st.expander(f"{v['nom']} ({v['role']})"):
-            st.write(f"**Traits:** {v['traits']}")
-            st.info(f"**État:** {v['etat']}")
-
-with col2:
-    st.header("Journal du Village")
     
-    if st.button("Passer une heure dans le village"):
-        with st.spinner("Le temps passe..."):
-            for v in st.session_state.villagers:
-                action = generate_life_step(v)
-                v['etat'] = action # Mise à jour de l'état pour la prochaine itération
-                timestamp = time.strftime("%H:%M")
-                log_entry = f"**{timestamp} - {v['nom']}:** {action}"
-                st.session_state.history.insert(0, log_entry)
-        
-    # Affichage du journal
-    for entry in st.session_state.history:
-        st.write(entry)
+    try:
+        response = llm.invoke(prompt)
+        # Nettoyage sommaire pour extraire le JSON
+        start = response.find('{')
+        end = response.rfind('}') + 1
+        data = json.loads(response[start:end])
+        return data
+    except:
+        return {"pensee": "Je suis un peu perdu...", "action": "Rêvasse près du puits"}
 
-# --- STYLE ---
-st.markdown("""
-<style>
-    .stExpander { border: 1px solid #4CAF50; border-radius: 10px; margin-bottom: 10px; }
-</style>
-""", unsafe_allow_html=True)
+# --- INTERFACE ---
+st.title("🏘️ Moteur de Simulation de Vie")
+
+# Barre latérale pour le statut du monde
+with st.sidebar:
+    st.header("🌍 État du Monde")
+    st.write(f"Tour de simulation : {st.session_state.world_step}")
+    if st.button("🔄 Simuler un tour", use_container_width=True):
+        for name in st.session_state.villagers:
+            res = simulate_step(name)
+            st.session_state.villagers[name]['memoire'].append(res['action'])
+        st.session_state.world_step += 1
+
+# Affichage des cartes des personnages
+cols = st.columns(len(st.session_state.villagers))
+
+for i, (name, data) in enumerate(st.session_state.villagers.items()):
+    with cols[i]:
+        st.subheader(name)
+        st.caption(data['role'])
+        
+        # Affichage du dernier souvenir / pensée
+        if data['memoire']:
+            st.success(f"**Action:** {data['memoire'][-1]}")
+            
+        with st.expander("Voir l'historique"):
+            for m in reversed(data['memoire']):
+                st.write(f"- {m}")
