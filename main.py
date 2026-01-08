@@ -1,85 +1,104 @@
 import streamlit as st
-from langchain_community.llms import Ollama
-import json
-import random
+import time
 import pandas as pd
+from core.config import GRID_SIZE, MAP_LOCATIONS
+from core.llm import get_llm
+from core import storage
+from plugins import villagers, relations, buildings, weather
 
 # --- CONFIGURATION ---
 st.set_page_config(page_title="IA Village Life Cycle", layout="wide")
-llm = Ollama(model="llama3.2:1b", temperature=0.7)
-
-# --- CONSTANTES ---
-GRID_SIZE = 5
-MAP_LOCATIONS = {
-    (0, 0): "La Forge", (4, 4): "L'Auberge", (2, 2): "La Place",
-    (0, 4): "L'Apothicaire", (4, 0): "La Forêt"
-}
 
 # --- INITIALISATION ---
+if 'llm' not in st.session_state:
+    st.session_state.llm = get_llm()
+
 if 'villagers' not in st.session_state:
-    st.session_state.villagers = {
-        "Elora": {"role": "Apothicaire", "pos": [0, 4], "home": [0, 4], "energy": 100, "rel": {"Kael": 0, "Lila": 10}},
-        "Kael": {"role": "Forgeron", "pos": [0, 0], "home": [1, 0], "energy": 100, "rel": {"Elora": 0, "Lila": -5}},
-        "Lila": {"role": "Aubergiste", "pos": [4, 4], "home": [4, 3], "energy": 100, "rel": {"Elora": 20, "Kael": 0}}
-    }
+    # Tentative de chargement
+    saved_state = storage.load_world()
+    
+    if saved_state:
+        st.session_state.villagers = saved_state['villagers']
+        st.session_state.world_time = saved_state['world_time']
+        st.session_state.logs = saved_state['logs']
+        if 'weather' in saved_state:
+            st.session_state.weather = saved_state['weather']
+    else:
+        # Valeurs par défaut
+        st.session_state.villagers = {
+            "Elora": {"role": "Apothicaire", "pos": [0, 4], "home": [0, 4], "energy": 100, "rel": {"Kael": 0, "Lila": 10}},
+            "Kael": {"role": "Forgeron", "pos": [0, 0], "home": [1, 0], "energy": 100, "rel": {"Elora": 0, "Lila": -5}},
+            "Lila": {"role": "Aubergiste", "pos": [4, 4], "home": [4, 3], "energy": 100, "rel": {"Elora": 20, "Kael": 0}}
+        }
+        st.session_state.world_time = 8
+        st.session_state.logs = []
+
 if 'world_time' not in st.session_state:
-    st.session_state.world_time = 8  # Début à 8h du matin
+    st.session_state.world_time = 8
 if 'logs' not in st.session_state:
     st.session_state.logs = []
 
-# --- LOGIQUE IA ---
-def agent_turn(name):
-    v = st.session_state.villagers[name]
-    heure = st.session_state.world_time
-    est_nuit = heure >= 22 or heure <= 6
+# --- ORCHESTRATION ---
+def run_simulation_step():
+    st.session_state.world_time = (st.session_state.world_time + 1) % 24
+    current_weather = weather.update_weather()
     
-    status = "fatigué" if v['energy'] < 30 else "en forme"
-    consigne_nuit = "Il fait nuit, tu devrais aller dormir chez toi." if est_nuit else "Il fait jour, travaille ou socialise."
+    for name in st.session_state.villagers:
+        # Décision de l'agent (Plugin Villagers)
+        decision = villagers.agent_turn(
+            st.session_state.llm, 
+            name, 
+            st.session_state.villagers, 
+            st.session_state.world_time,
+            current_weather
+        )
+        
+        v = st.session_state.villagers[name]
+        
+        # Mise à jour de la position et de l'énergie (Plugin Buildings)
+        v['pos'] = decision['dest']
+        v['energy'] = buildings.update_energy(v, decision['action'])
 
-    prompt = f"""
-    Tu es {name}. Heure: {heure}h. Énergie: {v['energy']}/100 ({status}).
-    Position: {v['pos']}. Maison: {v['home']}.
-    {consigne_nuit}
+        # Gestion des relations (Plugin Relations)
+        v = relations.update_relationships(v, decision)
+        
+        # Logging
+        st.session_state.logs.insert(0, f"{st.session_state.world_time}h - **{name}** : {decision['pensee']}")
     
-    Réponds en JSON:
-    {{
-        "pensee": "...",
-        "action": "DORMIR" ou "TRAVAILLER" ou "MARCHER",
-        "dest": [x, y]
-    }}
-    """
-    try:
-        res = llm.invoke(prompt)
-        data = json.loads(res[res.find('{'):res.rfind('}')+1])
-        return data
-    except:
-        return {"pensee": "Je plane...", "action": "RIEN", "dest": v['pos']}
+    # Sauvegarde automatique
+    storage.save_world(
+        st.session_state.villagers, 
+        st.session_state.world_time, 
+        st.session_state.logs,
+        st.session_state.get('weather', "Ensoleillé ☀️")
+    )
 
 # --- INTERFACE ---
 st.title("🌙 Village IA : Cycle de Vie")
 
-# Sidebar Status
+# Sidebar
 with st.sidebar:
     st.header(f"⏰ {st.session_state.world_time}:00")
+    st.info(f"Météo: {weather.get_current_weather()}")
+    
     if st.session_state.world_time >= 22 or st.session_state.world_time <= 6:
         st.warning("🌙 Il fait nuit...")
     else:
         st.success("☀️ Il fait jour")
     
     if st.button("⏭️ Passer à l'heure suivante", use_container_width=True):
-        st.session_state.world_time = (st.session_state.world_time + 1) % 24
-        for name in st.session_state.villagers:
-            decision = agent_turn(name)
-            v = st.session_state.villagers[name]
-            
-            # Application des conséquences
-            v['pos'] = decision['dest']
-            if decision['action'] == "DORMIR" and v['pos'] == v['home']:
-                v['energy'] = min(100, v['energy'] + 20)
-            else:
-                v['energy'] = max(0, v['energy'] - 10)
-            
-            st.session_state.logs.insert(0, f"{st.session_state.world_time}h - **{name}** : {decision['pensee']}")
+        run_simulation_step()
+        st.rerun()
+
+    auto_run = st.checkbox("🔄 Mode Automatique")
+
+    st.markdown("---")
+    st.subheader("Relations")
+    for name, data in st.session_state.villagers.items():
+        with st.expander(f"Relations de {name}"):
+            for target, score in data['rel'].items():
+                icon = "❤️" if score > 50 else "💔" if score < -20 else "😐"
+                st.write(f"{icon} {target}: {score}")
 
 # Affichage de la carte
 grid = [["" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
@@ -93,3 +112,9 @@ st.table(pd.DataFrame(grid))
 st.subheader("📜 Journal de vie")
 for log in st.session_state.logs[:8]:
     st.write(log)
+
+# --- AUTO RUN ---
+if 'auto_run' in locals() and auto_run:
+    time.sleep(1)
+    run_simulation_step()
+    st.rerun()
