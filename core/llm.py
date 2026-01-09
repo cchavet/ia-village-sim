@@ -1,6 +1,5 @@
 import os
 from google import genai
-import streamlit as st
 from dotenv import load_dotenv
 
 # Load Env (API Key)
@@ -8,7 +7,7 @@ load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
 if not API_KEY:
-    st.error("Clé API Google manquante dans le fichier .env !")
+    print("FATAL: Clé API Google manquante dans le fichier .env !")
 
 class GeminiWrapper:
     def __init__(self, model_name="models/gemini-2.0-flash-exp"):
@@ -18,7 +17,7 @@ class GeminiWrapper:
             try:
                 self.client = genai.Client(api_key=API_KEY)
             except Exception as e:
-                st.error(f"Erreur Client GenAI: {e}")
+                print(f"Erreur Client GenAI: {e}")
         
         # Compatibility layer for storybook.py (client.models.generate_content)
         self.models = self 
