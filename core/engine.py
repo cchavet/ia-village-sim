@@ -1,5 +1,6 @@
 import streamlit as st
-from plugins import characters, relations, buildings, weather, economy, storybook
+from game.entities import characters, buildings
+from game.systems import relations, weather, economy, storybook
 from core import storage
 
 class SimulationEngine:
@@ -71,7 +72,7 @@ class SimulationEngine:
         time_str = f"{current_time_min // 60}h{current_time_min % 60:02d}"
 
         # Initialize Stats if needed
-        from plugins import rpg_system
+        from game.entities import rpg as rpg_system
         for name, v in st.session_state.characters.items():
             if 'stats' not in v:
                 v['stats'] = rpg_system.init_stats(v['role'])
@@ -111,9 +112,10 @@ class SimulationEngine:
         if found_extras:
             batches.append(found_extras)
             
-        # 2. Batch others in pairs
-        for i in range(0, len(remaining_pool), 2):
-            batches.append(remaining_pool[i:i+2])
+        # 2. Batch others in MASSIVE groups (Gemini Flash Context is huge)
+        BATCH_SIZE = 15
+        for i in range(0, len(remaining_pool), BATCH_SIZE):
+            batches.append(remaining_pool[i:i+BATCH_SIZE])
             
         # Worker (Same as before)
         def process_batch_task(agent_names, chars_data, current_weather, llm_obj, t_str):

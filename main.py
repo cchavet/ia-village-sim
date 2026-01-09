@@ -3,14 +3,14 @@ import json
 from datetime import datetime
 from core.llm import get_llm
 from core import storage, ui, engine as game_engine
-from plugins import storybook
+from game.systems import storybook
 
 # --- CONFIG ---
 try:
-    with open("world_seed.json", "r", encoding='utf-8') as f:
+    with open("resources/world_gen/world_seed.json", "r", encoding='utf-8') as f:
         SEED = json.load(f)
 except FileNotFoundError:
-    st.error("world_seed.json introuvable !")
+    st.error("resources/world_gen/world_seed.json introuvable !")
     st.stop()
 
 # --- INITIALISATION ---
@@ -78,22 +78,25 @@ engine = game_engine.SimulationEngine(SEED)
 
 # --- LOGIC ---
 def run_step(target_agents=None):
-    # 1. Simulation
+    # 1. Simulation (Agents)
     full_text = "\n".join(st.session_state.current_chapter)
-    step_logs = engine.run_agents_turn(current_chapter_text=full_text, target_agents=target_agents)
     
-    # 2. Narration
-    narrator_gen = storybook.narrate_continuous(
-        full_text, 
-        "\n".join(step_logs), 
-        SEED, 
-        world_time_min=st.session_state.world_time, # Pass time for Pacing Logic
-        key_facts="\n".join(st.session_state.key_facts)
-    )
+    with st.spinner(f"🧠 {len(target_agents)} Agents réfléchissent..."):
+        step_logs = engine.run_agents_turn(current_chapter_text=full_text, target_agents=target_agents)
     
-    new_text_block = ""
-    for chunk in narrator_gen:
-            new_text_block += chunk
+    # 2. Narration (Storybook)
+    with st.spinner("✍️ Le Narrateur écrit l'histoire..."):
+        narrator_gen = storybook.narrate_continuous(
+            full_text, 
+            "\n".join(step_logs), 
+            SEED, 
+            world_time_min=st.session_state.world_time, 
+            key_facts="\n".join(st.session_state.key_facts)
+        )
+        
+        new_text_block = ""
+        for chunk in narrator_gen:
+                new_text_block += chunk
     
     if new_text_block:
         st.session_state.current_chapter.append(new_text_block)
@@ -200,8 +203,7 @@ if st.session_state.running:
     
     # Check if Agents need to play
     if ready_agents:
-        with st.spinner(f"🧠 {len(ready_agents)} Agents décident..."):
-            run_step(target_agents=ready_agents) 
+        run_step(target_agents=ready_agents) 
         
         # Log update is already in engine
         st.session_state.logs.append(f"*[SYSTEM] {st.session_state.world_time//60}h{st.session_state.world_time%60:02d} : {len(ready_agents)} actions.*")

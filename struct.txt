@@ -1,0 +1,43 @@
+PROJET_JEU/
+├── core/                       # Le moteur (Immuable, technique)
+│   ├── engine.py               # Boucle de jeu, gestion du temps (Tick)
+│   ├── bus.py                  # Système d'événements (Pub/Sub) [NEW]
+│   ├── storage.py              # I/O, Compression ZIP
+│   ├── llm.py                  # Client API (Google Gemini Online)
+│   ├── ui.py                   # Abstraction de l'interface
+│   └── config.py               # Constantes
+│
+├── game/                       # Logique métier (Plugins & Gameplay)
+│   ├── systems/                # Systèmes globaux
+│   │   ├── weather.py
+│   │   ├── economy.py
+│   │   ├── storybook.py
+│   │   └── relations.py
+│   └── entities/               # Objets du monde
+│       ├── characters.py
+│       ├── buildings.py
+│       └── rpg.py              # Stats & Skills
+│
+├── resources/                  # Données Statiques
+│   ├── story/                  # Narratif (Lore)
+│   └── world_gen/              # Seeds (world_seed.json)
+│
+├── data/                       # État Session (Lecture/Écriture)
+│   ├── current_world.zip       # Sauvegarde (State + Meta + Screenshot)
+│   ├── current_world.json      # (Legacy/Debug)
+│   └── logs/
+│
+├── saves/                      # Sauvegardes persistantes
+│   └── save_001/
+│       ├── state.json          # Dump complet du dossier ./data/
+│       ├── metadata.json       # Date, heure de jeu, version
+│       └── screenshot.jpg      # Capture visuelle
+│
+├── tools/                      # Utilitaires hors-jeu
+│   ├── world_generator.py      # Script qui peuple ./data/ à partir du seed
+│   └── validator.py            # Vérifie la syntaxe des JSON (Schemas)
+│
+├── .env                        # Clés API (à mettre dans .gitignore)
+├── main.py                     # Point d'entrée unique
+├── requirements.txt            # Dépendances (Pydantic, Pillow, etc.)
+└── README.md
