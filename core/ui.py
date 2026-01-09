@@ -1,283 +1,276 @@
 import streamlit as st
 
-def inject_css():
+def inject_custom_css():
     st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
 
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --accent-color: #00f2ff;
-      --text-color: #e0e0e0;
+      --bg-color: #0f0518; /* Deep Void Purple */
+      --panel-bg: rgba(30, 15, 45, 0.7); /* Glassy Purple */
+      --border-color: rgba(189, 147, 249, 0.2);
+      --accent-gold: #d4af37;
+      --accent-neon: #ff00ff;
+      --text-main: #e0d0f5;
+      --text-dim: #9aa5b1;
     }
 
-    /* Override Streamlit Base */
     .stApp {
-        background: radial-gradient(circle at center, #1a2a3a 0%, #0a0f14 100%);
-        font-family: 'Inter', sans-serif;
-        color: var(--text-color);
+        background: radial-gradient(circle at 50% 20%, #2a0e45 0%, #05010a 100%);
+        font-family: 'Lato', sans-serif;
+        color: var(--text-main);
     }
     
-    /* Hide Streamlit Elements */
-    header {visibility: hidden;}
-    .stDeployButton {display:none;}
-    #MainMenu {visibility: hidden;}
+    /* Remove Padding */
+    .main .block-container {
+        padding: 1rem 2rem !important;
+        max-width: 100% !important;
+    }
+    header, footer {visibility: hidden;}
     
-    /* Custom App Container */
-    .app-container {
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        backdrop-filter: blur(20px);
-        background: var(--glass-bg);
+    /* PANELS (Bento Grid style) */
+    .panel {
+        background: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
         padding: 20px;
-    }
-
-    /* Header & Avatars */
-    .ui-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--glass-border);
-      margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: all 0.3s ease;
     }
     
-    .scenario-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--accent-color);
+    .panel:hover {
+        border-color: rgba(212, 175, 55, 0.3); /* Subtle Gold Glow */
+    }
+    
+    .panel-header {
+        font-family: 'Playfair Display', serif;
         text-transform: uppercase;
         letter-spacing: 2px;
-    }
-
-    .character-group {
-      display: flex;
-      gap: 15px;
-    }
-
-    .avatar-box {
-      position: relative;
-      cursor: pointer;
-    }
-
-    .avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      padding: 2px;
-      transition: all 0.3s ease;
-      filter: grayscale(0.8);
-      object-fit: cover;
-      background: #222;
-    }
-
-    .avatar:hover, .avatar.active {
-      border-color: var(--accent-color);
-      filter: grayscale(0);
-      box-shadow: 0 0 15px var(--accent-color);
+        font-size: 1rem;
+        color: var(--accent-gold);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
-    .avatar-badge {
-        position: absolute;
-        bottom: -5px;
-        right: -5px;
-        background: #000;
-        color: white;
-        font-size: 0.7rem;
-        padding: 2px 5px;
-        border-radius: 4px;
-        border: 1px solid #444;
+    /* LEFT: STAT CARDS */
+    .stat-card {
+        background: rgba(0,0,0,0.2);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-left: 3px solid #332b40;
+        transition: transform 0.2s;
     }
-
-    /* Map Panel */
-    .map-placeholder {
-      background: rgba(0,0,0,0.3);
-      border-radius: 16px;
-      border: 1px solid var(--glass-border);
-      padding: 10px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    .stat-card:hover { transform: translateX(5px); }
+    .stat-card.active { 
+        border-left-color: var(--accent-neon);
+        box-shadow: inset 0 0 20px rgba(255, 0, 255, 0.05);
     }
-
-    /* Grid Styling */
+    
+    .stat-name { 
+        font-family: 'Playfair Display', serif; 
+        font-weight: 700; 
+        font-size: 1.1rem; 
+        color: #fff; 
+    }
+    
+    /* CENTER: MAP */
+    .map-container {
+        width: 100%;
+        aspect-ratio: 1/1;
+        background: #050b14;
+        border-radius: 8px;
+        position: relative;
+        box-shadow: inset 0 0 50px #000;
+        overflow: hidden;
+    }
+    
     .map-grid {
         display: grid;
-        grid-template-columns: repeat(32, 1fr);
-        gap: 1px;
-        aspect-ratio: 1/1;
-        width: 100%;
-    }
-    
-    .map-cell {
-        position: relative;
         width: 100%;
         height: 100%;
     }
     
-    .char-marker {
-        font-size: 2rem; 
-        filter: drop-shadow(0 0 5px var(--accent-color));
-        animation: pulse 2s infinite;
-        background: radial-gradient(circle, rgba(0,0,0,0.8) 0%, transparent 70%);
+    .map-marker {
+        position: absolute;
+        width: 70%; height: 70%;
+        top: 15%; left: 15%;
         border-radius: 50%;
-        width: 100%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 10px var(--accent-neon);
+        z-index: 10;
+        transition: all 0.5s ease-in-out;
+    }
+    
+    /* RIGHT: STORY FEED */
+    .story-feed {
+        overflow-y: auto;
+        font-family: 'Georgia', serif; /* Book look */
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #eaddcf; /* Paper-ish text */
         height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        padding-right: 10px;
     }
     
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-
-    /* Story Panel */
-    .story-panel {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 16px;
-      padding: 25px;
-      height: 600px;
-      overflow-y: auto;
-      border: 1px solid var(--glass-border);
-    }
+    .story-feed::-webkit-scrollbar { width: 6px; }
+    .story-feed::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
     
-    .story-content {
-        font-family: 'Georgia', serif;
-        line-height: 1.8;
-        font-size: 1.1rem;
-        color: #ddd;
-    }
-    
-    .story-block {
-        margin-bottom: 25px;
-        padding-left: 15px;
-        border-left: 2px solid #444;
-        animation: fadeIn 1s ease-in;
-    }
-    
-    .current-writing {
-        border-left: 3px solid var(--accent-color);
-        background: linear-gradient(90deg, rgba(0,242,255,0.05) 0%, transparent 100%);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Buttons */
-    div[data-testid="stButton"] button {
-        background: var(--glass-bg);
-        border: 1px solid var(--accent-color);
-        color: var(--accent-color);
-        width: 100%;
-        border-radius: 12px;
-        font-size: 18px;
-        transition: 0.3s;
+    /* BUTTONS */
+    .stButton button {
+        background: linear-gradient(45deg, #2a0e45, #5a1e96);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        font-family: 'Playfair Display', serif;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
+        padding: 10px 20px;
+        border-radius: 30px;
+        transition: all 0.3s;
     }
-    div[data-testid="stButton"] button:hover {
-        background: var(--accent-color);
-        color: #000;
-        box-shadow: 0 0 20px var(--accent-color);
-        border-color: var(--accent-color);
-    }
-    
-    /* Loading Animation */
-    .glass-loader {
-        display: inline-block;
-        position: relative;
-        width: 80px;
-        height: 80px;
-    }
-    .glass-loader:after {
-        content: " ";
-        display: block;
-        border-radius: 50%;
-        width: 0;
-        height: 0;
-        margin: 8px;
-        box-sizing: border-box;
-        border: 32px solid var(--accent-color);
-        border-color: var(--accent-color) transparent var(--accent-color) transparent;
-        animation: glass-loader 1.2s infinite;
-    }
-    @keyframes glass-loader {
-        0% { transform: rotate(0); animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
-        50% { transform: rotate(900deg); animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
-        100% { transform: rotate(1800deg); }
+    .stButton button:hover {
+        background: linear-gradient(45deg, #4b1a7a, #8a2be2);
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+        border-color: var(--accent-gold);
     }
     
-    /* Page Turn Animation */
-    .slide-in-right {
-        animation: slideInRight 0.5s ease-out forwards;
+    /* Remove Padding (Aggressive) */
+    .main .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        max-width: 100% !important;
+        margin-top: 0rem !important;
     }
-    @keyframes slideInRight {
-        from { opacity: 0; transform: translateX(50px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
+    
+    header, footer {visibility: hidden;}
 
 </style>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-def render_header(scenario_name, world_time, villagers):
-    avatars_html = ""
-    for name, v in villagers.items():
-        icon_url = "https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-        if "John" in name: icon_url = "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
-        if "Barbie" in name: icon_url = "https://cdn-icons-png.flaticon.com/512/4140/4140047.png"
-        
-        # Flattened HTML for Markdown compatibility
-        avatars_html += f'<div class="avatar-box" title="{name} | 🔋{v["energy"]}%"><img src="{icon_url}" class="avatar active"><div class="avatar-badge">{v["energy"]}%</div></div>'
-
-    header_html = f'''
-    <div class="ui-header">
-    <div class="scenario-title">{scenario_name} <span style="font-size:0.8rem; opacity:0.6">| Jour {world_time // 24 + 1} - {world_time}h00</span></div>
-    <div class="character-group">
-    {avatars_html}
-    </div>
-    </div>
-    '''
-    st.markdown(header_html, unsafe_allow_html=True)
-
-def render_map(grid_size, map_layout, map_colors, villagers):
-    grid_html = '<div class="map-grid">'
-    for y in range(grid_size):
-        for x in range(grid_size):
-            char_terrain = map_layout[y][x]
-            color = map_colors.get(char_terrain, "#111")
-            
-            content = ""
-            for p_name, p_data in villagers.items():
-                if p_data['pos'] == [x, y]:
-                    avatar = "👱‍♀️" if "Barbie" in p_name else "👮‍♂️" if "John" in p_name else "👨‍🔬"
-                    content = f'<div class="char-marker">{avatar}</div>'
-            
-            if not content:
-                if char_terrain == "?": content = "📦"
-                if char_terrain == "A": content = "✈️"
-                
-            grid_html += f'<div class="map-cell" style="background-color: {color}; display:flex; align-items:center; justify-content:center;">{content}</div>'
-            
-    grid_html += '</div>'
+def render_dashboard(characters, world_time, map_layout, map_colors, story_text, logs, map_objects=None):
     
-    st.markdown('<div class="map-placeholder">', unsafe_allow_html=True)
-    st.markdown(grid_html, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # ... (CSS Inject calls) ...
+    inject_custom_css()
+    
+    # ... (Header) ...
+    # ... (Header) ...
+    # ... (Styles injected above) ...
+    # Ensure Map Grid is strictly sized
+    grid_size = len(map_layout)
+    
+    # ... (Header) ...
+    st.markdown(f"""
+    <div style="text-align:center; font-family:'Playfair Display', serif; color:#d4af37; font-size:1.5rem; letter-spacing:4px; margin-bottom:20px;">
+        EROS CLUB <span style="font-size:0.8rem; color:#fff; vertical-align:middle; opacity:0.5;">| {world_time}H00 | JOUR {world_time//24 + 1}</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col_left, col_center, col_right = st.columns([1, 2, 1], gap="medium")
+    
+    
+    # LEFT PANEL
+    with col_left:
+        st.markdown('<div class="panel" style="height: 80vh; overflow-y: auto;">', unsafe_allow_html=True)
+        st.markdown(f'<div class="panel-header"><span>CLUBBERS</span> <span>{len(characters)} PRÉSENTS</span></div>', unsafe_allow_html=True)
+        
+        for name, v in characters.items():
+            active_class = "active" if v.get('excitation', 0) > 50 else ""
+            
+            # Icons
+            role_icon = "👤"
+            if "Barmaid" in v['role']: role_icon = "🍹"
+            if "Hôtesse" in v['role']: role_icon = "🌸"
+            if "Videur" in v['role']: role_icon = "🛡️"
+            if "Barman" in v['role']: role_icon = "🍺"
+            
+            # HTML Construction (No Indent to avoid Code Block)
+            stats_html = f"""<div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.8rem; color:#ccc;">
+<span title="Energie">⚡ {v.get('energy', 100)}%</span>
+<span title="Excitation" style="color:#ff69b4;">❤️ {v.get('excitation', 0)}%</span>
+<span title="Alcool">🍷 {v.get('alcohol', 0.0)}g</span>
+</div>"""
+            
+            card_html = f"""<div class="stat-card {active_class}">
+<div class="stat-name">{role_icon} {name} <span style="float:right; font-size:0.7rem; opacity:0.7;">{v['role']}</span></div>
+{stats_html}
+<div class="stat-meta" style="margin-top:4px;">📍 {str(v['pos'])}</div>
+<div class="stat-meta" style="font-style:italic; font-size:0.7rem; color:#888;">🎒 {', '.join(v.get('inventory', [])[:2])}</div>
+</div>"""
+            
+            st.markdown(card_html, unsafe_allow_html=True)
+            
+        st.markdown('</div>', unsafe_allow_html=True)
 
-def render_loader():
-    st.markdown('<div style="display:flex; justify-content:center; align-items:center; height:600px;"><div class="glass-loader"></div></div>', unsafe_allow_html=True)
+    # CENTER MAP
+    with col_center:
+        st.markdown('<div class="panel" style="height: 80vh; padding:0; background:#050b14; display:flex; align-items:center; justify-content:center;">', unsafe_allow_html=True)
+        
+        cells_html = ""
+        for y in range(grid_size):
+            for x in range(grid_size):
+                char = map_layout[y][x]
+                col = map_colors.get(char, "#111")
+                
+                markers = ""
+                # 1. Villagers
+                for v_name, v_data in characters.items():
+                    if v_data['pos'] == [x, y]:
+                         color = "red" # Client default
+                         if "Hôtesse" in v_data['role']: color = "gold"
+                         if "Barmaid" in v_data['role']: color = "cyan"
+                         if "Barman" in v_data['role']: color = "cyan"
+                         if "Videur" in v_data['role']: color = "#555"
+                         markers += f'<div class="map-marker" style="background:{color}; box-shadow: 0 0 5px {color};" title="{v_name}"></div>'
+                
+                # 2. Objects
+                if map_objects:
+                    for obj in map_objects:
+                        if obj['pos'] == [x, y]:
+                            markers += f'<div style="position:absolute; bottom:0; right:0; font-size:10px; line-height:1;">🎁</div>'
 
-def render_story_page(content, page_num, total_pages):
-    st.markdown('<div class="story-panel">', unsafe_allow_html=True)
-    if content:
-        clean_page = content.replace("### ", "").replace("\n", "<br>")
-        st.markdown(f'<div class="story-content slide-in-right"><div class="story-block">{clean_page}</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="text-align:center; opacity:0.5; font-size:0.8rem; margin-top:20px;">Page {page_num} / {total_pages}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div class="story-content"><i>Le livre est vide...</i></div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+                cells_html += f'<div class="map-cell" style="background:{col}; position:relative; width:100%; height:100%;">{markers}</div>'
+                
+        # GRID CONTAINER
+        st.markdown(f"""
+        <div style="
+            display: grid;
+            grid-template-columns: repeat({grid_size}, 1fr);
+            grid-template-rows: repeat({grid_size}, 1fr);
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-height: 100%;
+        ">
+            {cells_html}
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # LEGEND OVERLAY
+        st.markdown("""
+        <div style="position:absolute; bottom:10px; left:10px; color:#fff; font-size:0.7rem; background:rgba(0,0,0,0.7); padding:5px; border-radius:4px; pointer-events:none;">
+            D: Dance | B: Bar | X: Calin | L: Lounge | P: Piscine
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # RIGHT PANEL
+    with col_right:
+        st.markdown('<div class="panel" style="height: 80vh;">', unsafe_allow_html=True)
+        st.markdown('<div class="panel-header"><span>SCENARIO</span> <span>LIVE</span></div>', unsafe_allow_html=True)
+        
+        safe_text = story_text.replace("\n", "<br>")
+        st.markdown(f'<div class="story-feed">{safe_text}</div>', unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+

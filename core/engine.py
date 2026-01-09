@@ -1,5 +1,5 @@
 import streamlit as st
-from plugins import villagers, relations, buildings, weather, economy, storybook
+from plugins import characters, relations, buildings, weather, economy, storybook
 from core import storage
 
 class SimulationEngine:
@@ -13,100 +13,79 @@ class SimulationEngine:
             return self.seed['map_legend'].get(char, "Inconnu")
         return "Océan"
 
-    def generate_page_content(self, placeholder=None):
+    def run_single_turn(self, current_chapter_text=""):
         """
-        Génère une PAGE complète de roman (~300 mots).
-        Simule autant de tours que nécessaire.
+        Exécute UN seul tour de simulation pour tous les agents.
+        Retourne les logs techniques de ce tour.
         """
-        accumulated_text = ""
-        turn_count = 0
-        MAX_TURNS_PER_PAGE = 5
-        TARGET_WORDS = 300
+        # 1. Update Time/Weather
+        st.session_state.world_time = (st.session_state.world_time + 1) % 24
+        current_time = st.session_state.world_time
+        st.session_state.weather = weather.update_weather(st.session_state.weather)
         
-        full_page_logs = [] # To store Logs for history
+        step_logs = []
         
-        placeholder_text = "" # Local buffer for stream display
-        
-        while len(accumulated_text.split()) < TARGET_WORDS and turn_count < MAX_TURNS_PER_PAGE:
-            turn_count += 1
-            st.session_state.world_time = (st.session_state.world_time + 1) % 24
-            current_time = st.session_state.world_time
-            st.session_state.weather = weather.update_weather(st.session_state.weather)
-            
-            step_logs = []
-            
-            # --- SIMULATION TOUR ---
-            for name in st.session_state.villagers:
-                v = st.session_state.villagers[name]
-                x, y = v['pos']
-                terrain = self.get_terrain_at(x, y)
+        # 2. Agents Turn
+        # Using list() to avoid runtime error if dict changes size (unlikely here but safe)
+        for name in list(st.session_state.characters.keys()):
+            v = st.session_state.characters[name]
+            x, y = v['pos']
+            terrain = self.get_terrain_at(x, y)
 
-                # Décision & Mouvement (Simplified for brevity, logic remains same)
-                decision = villagers.agent_turn(
-                    st.session_state.llm, name, st.session_state.villagers, 
-                    current_time, st.session_state.weather, self.seed, terrain
-                )
-                
-                # Apply Move
-                dest_x, dest_y = decision['dest']
-                curr_x, curr_y = v['pos']
-                move_x = max(-1, min(1, dest_x - curr_x))
-                move_y = max(-1, min(1, dest_y - curr_y))
-                new_x = max(0, min(self.grid_size-1, curr_x + move_x))
-                new_y = max(0, min(self.grid_size-1, curr_y + move_y))
-                v['pos'] = [new_x, new_y]
-                
-                # Energy
+            # FULL CONTEXT passed via kwargs or modified agent_turn signature
+            # For now keeping signature compatible, but we can stick Context in session_state if needed
+            # Actually, user wants "fiche, etat du monde, chapitre en cours entier".
+            # We will handle the Prompt Construction update in 'characters.py' next.
+            # Here we just execute the logic.
+            
+            decision = characters.agent_turn(
+                st.session_state.llm, name, st.session_state.characters, 
+                current_time, st.session_state.weather, self.seed, terrain, 
+                context=current_chapter_text # Passing context, need to update characters.py to accept it
+            )
+            
+            # ACTIONS CLUB
+            action = decision['action']
+            
+            # Deplacement
+            dest_x, dest_y = decision['dest']
+            curr_x, curr_y = v['pos']
+            move_x = max(-1, min(1, dest_x - curr_x))
+            move_y = max(-1, min(1, dest_y - curr_y))
+            new_x = max(0, min(self.grid_size-1, curr_x + move_x))
+            new_y = max(0, min(self.grid_size-1, curr_y + move_y))
+            v['pos'] = [new_x, new_y]
+            
+            # Effects
+            action_msg = ""
+            if action == "BOIRE":
+                v['alcohol'] = round(v.get('alcohol', 0) + 0.2, 2)
+                v['excitation'] = min(100, v.get('excitation', 0) + 5)
+                action_msg = "🍸"
+            elif action == "FUMER":
+                v['cigarettes'] = v.get('cigarettes', 0) + 1
+                v['excitation'] = min(100, v.get('excitation', 0) + 2)
+                action_msg = "🚬"
+            elif action == "DANSER":
                 v['energy'] = max(0, v['energy'] - 5)
-                if decision['action'] == "DORMIR": v['energy'] = min(100, v['energy'] + 15)
-                
-                # Loot
-                action_msg = ""
-                if decision['action'] == "FOUILLER" and "?" in self.seed['map_layout'][new_y][new_x]:
-                    import random
-                    if random.random() < 0.3:
-                        item = random.choice(self.seed['loot_table'])
-                        v['inventory'].append(item)
-                        action_msg = f" | 🎁 Trouvé : {item} !"
-                
-                if decision['reaction']: relationships = relations.update_relationships(v, decision)
-                
-                # Log
-                stats = f"[🔋{v['energy']}%]"
-                step_logs.append(f"**{current_time}h - {name}** {stats}\n*{decision['pensee']}*\n> {decision['action']} {action_msg}")
+                v['excitation'] = min(100, v.get('excitation', 0) + 5)
+                action_msg = "💃"
+            elif action == "DRAGUER" or action == "INTERAGIR":
+                v['excitation'] = min(100, v.get('excitation', 0) + 10)
+                action_msg = "❤️"
+            
+            # Reaction Log
+            if decision['reaction']: action_msg += f" \"{decision['reaction']}\""
+            
+            # Log
+            # Include Location for Narrator Context
+            terrain_display = self.get_terrain_at(new_x, new_y)
+            log_entry = f"**{current_time}h - {name}** ({terrain_display}) [❤️{v.get('excitation',0)}% 🍷{v.get('alcohol',0)}g]\n*{decision['pensee']}*\n> {action} {action_msg}"
+            step_logs.append(log_entry)
 
-            # --- GENERATION NARRATIVE (SEGMENT) ---
-            if step_logs:
-                # Memoire
-                if 'key_facts' not in st.session_state: st.session_state.key_facts = []
-                new_facts = storybook.extract_facts_ai("\n".join(step_logs))
-                for f in new_facts: st.session_state.key_facts.append(f"J{st.session_state.world_time//24} {current_time}h: {f}")
-                
-                valid_facts = st.session_state.get('key_facts', [])[-10:]
-                
-                # Context = Previous Page + Current Params
-                prev_context = accumulated_text[-500:] # Last 500 chars of current page
-                
-                stream = storybook.narrate_page_segment(step_logs, prev_context, "\n".join(valid_facts))
-                
-                segment_text = ""
-                for chunk in stream:
-                    if chunk:
-                        segment_text += chunk
-                        # Live Update UI
-                        if placeholder:
-                            placeholder.markdown(f'<div class="story-block current-writing">{placeholder_text} {segment_text} ▌</div>', unsafe_allow_html=True)
-                
-                accumulated_text += "\n\n" + segment_text
-                placeholder_text += "\n\n" + segment_text
-                
-                full_page_logs.extend(step_logs)
-
-        # --- FIN PAGE ---
-        # Save logs
-        st.session_state.logs = full_page_logs + st.session_state.logs
+        # 3. Save State (Continuous)
+        st.session_state.logs = step_logs + st.session_state.logs
         if len(st.session_state.logs) > 500: st.session_state.logs = st.session_state.logs[:500]
+        storage.save_world(st.session_state.characters, st.session_state.world_time, st.session_state.logs, st.session_state.weather)
         
-        storage.save_world(st.session_state.villagers, st.session_state.world_time, st.session_state.logs, st.session_state.weather)
-        
-        return accumulated_text
+        return step_logs

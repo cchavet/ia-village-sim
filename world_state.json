@@ -1,108 +1,146 @@
 {
-    "villagers": {
-        "John": {
-            "role": "Pilote",
+    "characters": {
+        "Clem": {
+            "role": "Client",
+            "age": 35,
+            "description": "35 ans, brun, 1.75m, 62kg. En couple avec Mary depuis 8 ans. Veut raviver la flamme. Nerveux mais curieux.",
+            "pos": [
+                10,
+                15
+            ],
+            "energy": 80,
+            "excitation": 0,
+            "alcohol": 0.0,
+            "cigarettes": 0,
+            "inventory": [
+                "Carte Membre Club",
+                "Préservatifs"
+            ]
+        },
+        "Mary": {
+            "role": "Cliente",
+            "age": 32,
+            "description": "32 ans, brune, 1.56m, 47kg. Sensuelle, un peu timide au début mais aime être regardée.",
+            "pos": [
+                11,
+                15
+            ],
+            "energy": 80,
+            "excitation": 0,
+            "alcohol": 0.0,
+            "cigarettes": 0,
+            "inventory": [
+                "Robe de soirée",
+                "Rouge à lèvres"
+            ]
+        },
+        "Chloe": {
+            "role": "Hôtesse",
+            "age": 24,
+            "description": "Accueil, vestiaire. Souriante et professionnelle. Gardienne des téléphones.",
+            "pos": [
+                2,
+                2
+            ],
+            "energy": 90,
+            "excitation": 0,
+            "alcohol": 0.0,
+            "cigarettes": 0,
+            "inventory": [
+                "Caisse",
+                "Clés Vestiaire"
+            ]
+        },
+        "Lola": {
+            "role": "Barmaid",
+            "age": 28,
+            "description": "Sexy, efficace. Sert des cocktails forts.",
+            "pos": [
+                7,
+                8
+            ],
+            "energy": 90,
+            "excitation": 10,
+            "alcohol": 0.0,
+            "cigarettes": 0,
+            "inventory": [
+                "Shaker",
+                "Torchons"
+            ]
+        },
+        "Mike": {
+            "role": "Barman",
             "age": 30,
-            "description": "Sérieux, respecte les procédures. Le leader naturel.",
+            "description": "Charismatique, jongle avec les bouteilles. Complice de Lola.",
             "pos": [
-                16,
-                16
+                6,
+                8
             ],
-            "energy": 30,
+            "energy": 90,
+            "excitation": 5,
+            "alcohol": 0.0,
+            "cigarettes": 0,
             "inventory": [
-                "Uniforme déchiré"
-            ],
-            "gold": 0,
-            "rel": {
-                "null": 0
-            }
+                "Décapsuleur",
+                "Tequila"
+            ]
         },
-        "Barbie": {
-            "role": "Influenceuse",
-            "age": 20,
-            "description": "Obsédée par son téléphone (inutile ici). Superficielle mais peut surprendre.",
-            "pos": [
-                16,
-                17
-            ],
-            "energy": 55,
-            "inventory": [
-                "Smartphone (0% batterie)",
-                "Maillot de bain",
-                "Radio cassée",
-                "Bouteille d'eau",
-                "Bouteille d'eau"
-            ],
-            "gold": 0,
-            "rel": {}
-        },
-        "Ken": {
-            "role": "Docteur en Électronique",
+        "Igor": {
+            "role": "Videur",
             "age": 45,
-            "description": "Grand inventeur, voyageur expérimenté. Capable de réparer la radio.",
+            "description": "Imposant, surveille l'entrée et la salle. Calme mais dissuasif.",
             "pos": [
-                16,
-                17
+                3,
+                2
             ],
-            "energy": 35,
+            "energy": 95,
+            "excitation": 0,
+            "alcohol": 0.0,
+            "cigarettes": 0,
             "inventory": [
-                "Lunettes cassées"
+                "Oreillette",
+                "Lampe Torche"
+            ]
+        },
+        "Marc": {
+            "role": "Client",
+            "age": 42,
+            "description": "Habitué. Regard prédateur mais poli. En couple avec Sophie.",
+            "pos": [
+                14,
+                14
             ],
-            "gold": 0,
-            "rel": {
-                "null": 0
-            }
+            "energy": 85,
+            "excitation": 15,
+            "alcohol": 0.2,
+            "cigarettes": 0,
+            "inventory": []
+        },
+        "Sophie": {
+            "role": "Cliente",
+            "age": 39,
+            "description": "Élégante, très ouverte. Cherche à initier les nouveaux.",
+            "pos": [
+                15,
+                15
+            ],
+            "energy": 85,
+            "excitation": 20,
+            "alcohol": 0.1,
+            "cigarettes": 0,
+            "inventory": []
         }
     },
     "world_time": 21,
     "logs": [
-        "**21h - John** [🔋30% | 📍[16, 16] | 🎒1]\n\n*L'épuisement me gagne et mes réflexes s'émoussent. Selon le protocole de survie, je ne dois pas prendre de décisions critiques dans cet état, surtout sous cet orage. Je dois impérativement récupérer mes forces pour diriger les recherches au lever du jour.*\n\n> 🔧 DORMIR ",
-        "**21h - Barbie** [🔋55% | 📍[16, 17] | 🎒5]\n\n*Sérieusement ? Un orage ? Ma permanente ne va jamais tenir et j'ai l'impression d'être dans un mauvais remake de 'Lost' sans aucun filtre Instagram... Je suis épuisée, et sans batterie, ce miroir noir est juste déprimant.*\n\n> 🔧 DORMIR ",
-        "**21h - Ken** [🔋35% | 📍[16, 17] | 🎒1]\n\n*25% d'énergie... mes circuits internes sont à plat. Avec cet orage et mes lunettes brisées, je n'y vois goutte dans ces débris. Je dois impérativement recharger mes batteries avant de tenter une réparation radio demain.*\n\n> 🔧 DORMIR ",
-        "**20h - John** [🔋20% | 📍[16, 16] | 🎒1]\n\n*Vingt-cinq pour cent d'énergie... c'est critique. Cependant, le protocole impose de sécuriser les ressources prioritaires. Je dois fouiller la carlingue pour trouver la balise ou des vivres avant que l'orage ne sature la zone.*\n\n> 🔧 FOUILLER ",
-        "**20h - Barbie** [🔋45% | 📍[16, 17] | 🎒5]\n\n*Omg, cet orage est littéralement en train de ruiner mon brushing et ce sable est une agression pour mon exfoliation. Puisque mon téléphone est aussi mort que ma carrière sans Wi-Fi, je vais faire une sieste beauté forcée. Ken a intérêt à monter la garde s'il veut que je l'identifie sur ma prochaine photo imaginaire.*\n\n> 🔧 DORMIR ",
-        "**20h - Ken** [🔋25% | 📍[16, 17] | 🎒1]\n\n*Ma vue est brouillée sans mes verres et ce tonnerre assourdissant m'épuise... Avec si peu d'énergie, je risque le malaise avant même de trouver un condensateur. Je dois impérativement recharger mes batteries internes si je veux espérer bricoler un émetteur demain.*\n\n> 🔧 DORMIR ",
-        "**19h - John** [🔋25% | 📍[16, 16] | 🎒1]\n\n*Le protocole de survie exige que je sécurise d'abord les fournitures d'urgence de la carlingue. Mon énergie baisse, mais je ne peux pas me reposer sans avoir fouillé les décombres pour trouver la balise de détresse ou de l'eau.*\n\n> 🔧 FOUILLER ",
-        "**19h - Barbie** [🔋35% | 📍[16, 17] | 🎒5]\n\n*Sérieusement, ce sable est une agression totale pour ma pédicure. Mon téléphone est toujours dans le coma, mais j'ai vu des morceaux de métal brillant dans ce tas de valises... C'est peut-être ce qu'il faut pour que cette radio redevienne vintage et fonctionnelle.*\n\n> 🔧 FOUILLER  | 🎁 Trouvé : Bouteille d'eau !",
-        "**19h - Ken** [🔋15% | 📍[16, 17] | 🎒1]\n\n*Mes lunettes sont en morceaux, mais mon instinct d'ingénieur reste intact. Avec seulement 20% d'énergie, je ne ferai pas de vieux os si je ne trouve pas de quoi bricoler un signal ou me restaurer dans ces valises éventrées.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**18h - John** [🔋30% | 📍[16, 16] | 🎒1]\n\n*D'après les protocoles de survie, ma priorité absolue est de sécuriser des vivres et de vérifier l'état de l'émetteur d'urgence. Je dois rester concentré malgré la fatigue.*\n\n> 🔧 FOUILLER ",
-        "**18h - Barbie** [🔋40% | 📍[16, 17] | 🎒4]\n\n*Sérieusement, ce crash est un pur cauchemar pour mon feed Instagram... et mes cheveux ! Puisque je suis entourée de débris, je vais fouiller pour voir s'il n'y a pas un chargeur solaire ou au moins un miroir dans ces valises éparpillées.*\n\n> 🔧 FOUILLER  | 🎁 Trouvé : Bouteille d'eau !",
-        "**18h - Ken** [🔋20% | 📍[16, 17] | 🎒1]\n\n*Le soleil tape fort et ma vue est brouillée par ces verres brisés, mais je distingue des éclats métalliques parmi les bagages éventrés. Si je veux remettre cette radio en état, je dois dénicher des transistors ou au moins du cuivre avant que mes batteries personnelles ne tombent à plat.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**17h - John** [🔋35% | 📍[16, 16] | 🎒1]\n\n*Le protocole d'urgence est ma priorité. Je dois inspecter les débris du cockpit pour voir si l'émetteur de secours est encore intact ou si je peux récupérer des vivres dans les compartiments de service.*\n\n> 🔧 FOUILLER ",
-        "**17h - Barbie** [🔋45% | 📍[16, 17] | 🎒3]\n\n*Ok, le décor est totalement Instagrammable mais l'ambiance est grave angoissante. Mon téléphone est aussi utile qu'un sac à main sans anse. Je dois absolument trouver un chargeur solaire ou, genre, une trousse de maquillage de secours dans ces valises éparpillées !*\n\n> 🔧 FOUILLER  | 🎁 Trouvé : Radio cassée !",
-        "**17h - Ken** [🔋25% | 📍[16, 17] | 🎒1]\n\n*Ma vision est floue sans mes lunettes, mais mon instinct d'ingénieur me souffle que les débris de l'appareil doivent se trouver un peu plus loin. Je dois économiser le peu de force qu'il me reste pour atteindre le cockpit.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (16h)**\n\nLa carlingue n'est plus qu'un squelette fumant et la jungle m'observe déjà comme une veuve noire affamée. Ici, l'espoir coûte plus cher qu'une gorgée d'eau potable, et le sable a déjà le goût amer de mon propre enterrement.\n\n---",
-        "**16h - John** [🔋40% | 📍[16, 16] | 🎒1]\n\n*D'après la trajectoire de chute, les débris principaux devraient se trouver vers le nord-ouest. Je dois absolument localiser la carlingue pour vérifier l'état de l'émetteur d'urgence.*\n\n> 🔧 SE DEPLACER ",
-        "**16h - Barbie** [🔋50% | 📍[16, 17] | 🎒2]\n\n*C'est l'enfer, j'ai l'impression d'être dans un épisode de télé-réalité mais sans le buffet gratuit. Mon iPhone est littéralement un presse-papier à ce stade... Il faut absolument que je trouve un chargeur ou au moins un miroir dans ces débris pour vérifier l'état de mon mascara.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**16h - Ken** [🔋30% | 📍[15, 18] | 🎒1]\n\n*Sans mes lunettes intactes, la réfraction de ce soleil thaïlandais est un calvaire. Je dois économiser mes forces mais trouver rapidement des composants électroniques ou du cuivre dans les débris pour stabiliser cette radio.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (15h)**\n\nLa carcasse de métal fume encore sous une pluie acide, seul vestige d’un monde qui m’a déjà oublié sur ce rivage de sel et de sang. La jungle respire, sombre et vorace, guettant le moment où j'épuiserai ma dernière cartouche contre l'inévitable.\n\n---",
-        "**15h - John** [🔋45% | 📍[17, 17] | 🎒1]\n\n*L'impact a été violent, mais je dois garder la tête froide. Selon le protocole de survie, ma priorité immédiate est d'inventorier les ressources disponibles autour de la carlingue pour assurer la sécurité des passagers, s'il y en a d'autres.*\n\n> 🔧 FOUILLER ",
-        "**15h - Barbie** [🔋55% | 📍[16, 17] | 🎒2]\n\n*C'est un cauchemar... Mon iPhone est à 0% et y'a même pas de Starbucks à l'horizon. Je dois absolument trouver un chargeur solaire ou au moins mon sac à main dans ces décombres, parce que ce maillot de bain ne va pas se porter tout seul sans accessoires.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**15h - Ken** [🔋35% | 📍[14, 17] | 🎒1]\n\n*Sans mes lunettes intactes, souder des composants va être un calvaire... Je dois trouver des débris du cockpit pour espérer mettre la main sur un fer à souder ou du fil de cuivre.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (14h)**\n\nLa carlingue fume encore comme un mauvais cigare écrasé dans le sable poisseux d'une île qui n'attendait que notre chute. Ici, l'espoir a le goût du sang et la jungle murmure déjà notre oraison funèbre entre deux averses tropicales.\n\n---",
-        "**14h - John** [🔋50% | 📍[17, 17] | 🎒1]\n\n*Le protocole de survie exige d'établir un périmètre de sécurité immédiat. Je dois localiser l'épave principale pour évaluer l'état de l'émetteur radio et inventorier les fournitures d'urgence.*\n\n> 🔧 SE DEPLACER ",
-        "**14h - Barbie** [🔋60% | 📍[16, 17] | 🎒2]\n\n*OMG, c'est littéralement le pire shooting de ma vie. Tout ce sable dans mes cheveux, c'est un fashion faux-pas total ! Mais attendez... ces valises ouvertes, c'est peut-être l'occasion de trouver un chargeur solaire ou au moins un miroir de secours.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**14h - Ken** [🔋40% | 📍[13, 16] | 🎒1]\n\n*Ma vue baisse sans mes verres intacts, mais mes mains se souviennent de la topographie d'un circuit imprimé. Je dois absolument atteindre les débris du cockpit pour récupérer des fils de cuivre et un condensateur, avant que l'humidité tropicale ne corrode tout.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (13h)**\n\nLa carcasse fume encore sous une pluie de plomb, plaie de fer froid dans le flanc d'une jungle qui a déjà faim. Ici, l'ombre a des dents et le temps n'est qu'un compte à rebours avant l'oubli.\n\n---",
-        "**13h - John** [🔋55% | 📍[18, 18] | 🎒1]\n\n*D'après la trajectoire de chute, les débris principaux devraient se trouver vers le sud-est. Je dois rester méthodique et trouver des vivres ou la balise de détresse avant que la fatigue ne s'installe.*\n\n> 🔧 SE DEPLACER ",
-        "**13h - Barbie** [🔋65% | 📍[16, 17] | 🎒2]\n\n*OMG, c'est l'anarchie totale ici ! Je dois absolument retrouver mon vanity case au milieu de ces débris avant que mes cheveux ne frisent avec cette humidité tropicale. Si je trouve des trucs utiles, ça fera un super haul de survie.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**13h - Ken** [🔋45% | 📍[14, 17] | 🎒1]\n\n*Sans mes lunettes intactes, ma précision de soudure va en pâtir. Je dois trouver des composants électroniques ou au moins de quoi bricoler un signal. Je vais me diriger vers ce qui ressemble à une zone de débris pour espérer retrouver la carlingue.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (12h)**\n\nL'acier du fuselage gît dans le sable comme une carcasse encore fumante, tandis que la pluie lave le sang mais pas le désespoir. Entre le sel de mes plaies et l'ombre d'une jungle qui m'observe déjà, je sais que cette île ne rendra pas mon corps sans un combat sale.\n\n---",
-        "**12h - John** [🔋60% | 📍[17, 17] | 🎒1]\n\n*D'après la trajectoire de chute, le gros du fuselage doit être vers le nord-ouest. Je dois rester méthodique et trouver de quoi m'hydrater ou la balise de détresse rapidement.*\n\n> 🔧 SE DEPLACER ",
-        "**12h - Barbie** [🔋70% | 📍[16, 17] | 🎒2]\n\n*Sérieusement ? Pas de Wi-Fi, pas de batterie, et mes cheveux sont un désastre total ! Je vais fouiller dans ces valises éparpillées, j'espère au moins trouver un chargeur solaire ou un gloss repulpant... On ne peut pas survivre sans un minimum de style, même en mode naufragée.*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**12h - Ken** [🔋50% | 📍[13, 18] | 🎒1]\n\n*Sans mes lunettes intactes, la diffraction de la lumière solaire est gênante, mais je dois absolument localiser le fuselage de l'appareil. Ma priorité est de mettre la main sur des composants électroniques de rechange avant que l'oxydation saline ne les condamne.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (11h)**\n\nL’oiseau de métal a fini de hurler dans le sable poisseux, me laissant seul face à une soif qui vous cisaille les entrailles comme un vieux rasoir rouillé. Entre l'ombre menaçante des palmes et l'écume amère, cette île n'est pas un refuge, c'est un bourreau patient qui attend que je ferme l'œil.\n\n---",
-        "**11h - John** [🔋65% | 📍[18, 18] | 🎒1]\n\n*En tant que commandant de bord, ma priorité absolue est d'établir un périmètre de sécurité et de localiser l'émetteur de secours. Je dois trouver des débris exploitables pour envoyer un signal de détresse.*\n\n> 🔧 SE DEPLACER ",
-        "**11h - Barbie** [🔋75% | 📍[16, 17] | 🎒2]\n\n*Ok, premier jour sans Wi-Fi, c'est littéralement la fin du monde. Mon téléphone est mort comme mon dernier date, mais peut-être que si je marche un peu, je trouverai un spot avec une meilleure lumière... ou de quoi charger ce truc pour appeler mon agent.*\n\n> 🔧 SE DEPLACER ",
-        "**11h - Ken** [🔋55% | 📍[12, 17] | 🎒1]\n\n*Ma vue est trouble sans mes verres intacts, mais je dois impérativement localiser le fuselage du crash. Si je veux émettre un signal SOS, il me faut du fil de cuivre et des condensateurs encore exploitables dans les débris.*\n\n> 🔧 SE DEPLACER ",
-        "📖 **CHRONIQUE (10h)**\n\nLa nuit était tombée sur cette île maudite comme un linceul de plomb. L'odeur salée de la mort et du désespoir flottait dans l'air, se mêlant à celle, âcre, de la peur. Ici, la civilisation n'était qu'un vague souvenir, et la seule loi était celle du plus fort, ou plutôt, du plus rusé.\n\n\n---",
-        "**10h - John** [🔋70% | 📍[17, 17] | 🎒1]\n\n*Je dois essayer de réparer la radio. C'est le seul moyen de communiquer avec l'avion. J'ai besoin d'un peu plus d'énergie avant de le faire.*\n\n> 🔧 PARLER ",
-        "**10h - Barbie** [🔋80% | 📍[15, 16] | 🎒2]\n\n*J'ai besoin de mon téléphone pour appeler l'aérodrome, mais c'est toujours enfoncé... Je devrais chercher un moyen de le débarrasser.*\n\n> 🔧 FOUILLER ",
-        "**10h - Ken** [🔋60% | 📍[13, 18] | 🎒1]\n\n*Je dois trouver une solution pour réparer la radio. Les Lunettes cassées ne sont pas suffisantes.*\n\n> 🔧 FOUILLER ",
-        "📖 **CHRONIQUE (9h)**\n\nLa pluie fouettait mon visage comme les remords. L'épave de cet avion, un amas de métal tordu, était tout ce qui restait de mon ancienne vie. Maintenant, c'était juste moi, le sable froid sous mes bottes, et une île qui semblait murmurer des secrets sinistres dans le vent. Survivre ici... ça allait être un vrai film noir, un acte désespéré.\n\n\n---",
-        "**9h - John** [🔋75% | 📍[17, 17] | 🎒1]\n\n*Je dois trouver de l'eau avant de m'enfuir.*\n\n> 🔧 FOUILLER ",
-        "**9h - Barbie** [🔋85% | 📍[16, 17] | 🎒2]\n\n*Je suis dégonflée... Mon téléphone devrait être plus pratique !*\n\n> 🔧 FOUILLER  | Rien trouvé...",
-        "**9h - Ken** [🔋65% | 📍[14, 19] | 🎒1]\n\n*Je dois trouver des ressources pour réparer la radio, mais il est trop chaud ici.*\n\n> 🔧 FOUILLER "
+        "**21h - Clem** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Le cœur me bat à cent à l'heure. C'est intimidant, mais Mary est magnifique dans cette lumière tamisée. On est là, on l'a fait. On est au milieu du restaurant, tout semble si chic, loin de ce que j'imaginais. Il faut que je la rassure autant que je me rassure moi-même.*\n> PARLER  \"Je serre doucement la main de Mary, sentant l'humidité de sa paume contre la mienne. Je lui murmure à l'oreille : 'Respire, ma chérie... On y est. On ne se presse pas, on observe simplement pour commencer. Si on allait s'installer au bar pour prendre un verre et se détendre un peu ?'\"",
+        "**21h - Mary** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Mon cœur bat si fort que j'ai l'impression qu'on peut l'entendre à travers ma robe. C'est intimidant mais si excitant à la fois... Je me sens observée, et l'idée de ce qui nous attend dans la Zone X plus tard me donne déjà des frissons.*\n> PARLER  \"(Je serre la main de Clem un peu plus fort, lui jetant un regard timide mais complice) On y est enfin... L'ambiance est vraiment superbe, tu ne trouves pas ? On devrait peut-être se poser quelques minutes pour observer un peu avant de bouger.\"",
+        "**21h - Chloe** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Tiens, un nouveau couple. Ils ont l'air un peu nerveux, leurs mains tremblent presque, c'est typique des soirées découverte. Je vais les accueillir avec mon plus beau sourire pour faire descendre la pression.*\n> PARLER  \"Bonsoir ! Bienvenue à l'Eros Club. Je m'appelle Chloé. Ne soyez pas intimidés, vous allez voir, l'ambiance est très bienveillante ici. Je vous laisse me confier vos vestes ? Et n'oubliez pas la règle d'or : je garde vos téléphones sous clé pour que vous puissiez profiter de votre soirée en toute discrétion et liberté.\"",
+        "**21h - Lola** (Bar (Cyan)) [❤️10% 🍷0.0g]\n*Le calme avant la tempête. Je sens déjà l'électricité dans l'air avec l'arrivée des premiers clients. Il est temps que je me mette en place derrière mon comptoir ; les cocktails ne vont pas se servir tout seuls et ces petits nouveaux vont avoir besoin d'un peu de courage liquide.*\n> SE DEPLACER  \"Lola lisse sa jupe ajustée d'un geste suggestif, adresse un sourire entendu à Mike en passant à sa hauteur : 'Prêt pour le rush, Mike ? Je vais chauffer le bar.' Elle se dirige ensuite vers la zone de service d'un pas assuré et sensuel.\"",
+        "**21h - Mike** (Bar (Cyan)) [❤️5% 🍷0.0g]\n*Je vois deux nouvelles silhouettes à l'entrée, Clem et Mary si j'en crois le planning. Elles ont l'air un peu crispées, c'est charmant. Il est temps que je reprenne ma place derrière le zinc pour leur montrer de quel bois je me chauffe avec mes shakers. Un petit clin d'œil à Lola en passant, l'ambiance commence à monter.*\n> SE DEPLACER  \"Je réajuste mon gilet noir avec un sourire en coin, adresse un signe de tête complice à Lola et me dirige d'un pas assuré vers le Bar. En croisant les nouvelles arrivantes, je laisse traîner un regard chaleureux : 'Bienvenue à l'Eros Club, mesdames... Ne soyez pas timides, je vous prépare de quoi vous détendre d'ici une minute.'\"",
+        "**21h - Igor** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Tiens, voilà les petits nouveaux. Ils ont l'air nerveux, les mains moites et le regard hésitant. Mon boulot, c'est de m'assurer qu'ils franchissent le seuil en se sentant en sécurité, mais en comprenant bien que l'ordre règne ici.*\n> PARLER  \"Bonsoir. Bienvenue à l'Eros. Pour la 'Soirée Découverte', j'imagine ? Détendez-vous, respirez un grand coup. Une fois la porte passée, laissez vos craintes au vestiaire avec Chloé. On veille sur vous.\"",
+        "**21h - Marc** (Restaurant (Beige)) [❤️15% 🍷0.2g]\n*Tiens, du sang neuf. Ces deux-là ont l'air délicieusement nerveuses avec leurs mains moites. Un mélange d'innocence et de curiosité qui ne demande qu'à être exploré. Je vais rester à distance pour l'instant, les laisser s'imprégner de l'odeur du club.*\n> SE DEPLACER  \"Je pose une main possessive mais souple sur la hanche de Sophie, l'orientant vers le bar. En passant près de Clem et Mary, je soutiens leur regard juste une seconde de trop, un sourire énigmatique aux lèvres, avant de murmurer à l'oreille de ma compagne : 'Regarde ces deux beautés, le spectacle commence bien.'\"",
+        "**21h - Sophie** (Corridor/Sol (Gris)) [❤️20% 🍷0.1g]\n*Tiens, de nouveaux visages à l'entrée... Ce petit couple a l'air délicieusement intimidé, je sens leur nervosité d'ici. J'adore cette énergie fraîche et hésitante. Il est temps de sortir de l'ombre pour les mettre à l'aise, à ma façon.*\n> SE DEPLACER  \"Sophie ajuste la soie fine de sa robe qui souligne ses hanches, adresse un clin d'œil entendu à Marc, puis s'avance vers Clem et Mary avec un sourire prédateur mais chaleureux. 'Bonsoir... Vous avez l'air d'avoir besoin d'un guide pour briser la glace, non ?'\""
     ],
-    "weather": "Orageux ⛈️"
+    "weather": "Chaud"
 }

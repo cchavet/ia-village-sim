@@ -1,113 +1,208 @@
 {
-  "scenario_name": "Crash sur l'Île (32x32)",
-  "description": "Un avion s'est écrasé sur une île thaïlandaise inhabitée.",
+  "scenario_name": "Eros Club - Soirée Découverte",
+  "description": "Un club libertin moderne et chic en périphérie. Ambiance feutrée, lumières tamisées, musique Deep House.",
   "grid_size": 32,
   "map_legend": {
-    "~": "Mer (Bleu)",
-    ".": "Plage (Jaune)",
-    "#": "Jungle (Vert)",
-    "T": "Terre (Marron)",
-    "A": "Site du Crash (Blanc)",
-    "?": "Débris/Affaires (Rouge)"
+    ".": "Corridor/Sol (Gris)",
+    "#": "Mur (Noir)",
+    "D": "Piste de Danse (Violet)",
+    "B": "Bar (Cyan)",
+    "R": "Restaurant (Beige)",
+    "L": "Lounge/Canapés (Rouge S)",
+    "S": "Fumoir (Gris C)",
+    "X": "Coin Câlin (Rose)",
+    "P": "Piscine (Bleu)",
+    "O": "Transats/Extérieur (Vert)",
+    "+": "Douches (Blanc)",
+    "E": "Entrée/Vestiaire (Jaune)"
   },
   "map_colors": {
-    "~": "#1E90FF",
-    ".": "#F0E68C",
-    "#": "#228B22",
-    "T": "#8B4513",
-    "A": "#FFFFFF",
-    "?": "#FF0000"
+    ".": "#2c2c2c",
+    "#": "#000000",
+    "D": "#8a2be2",
+    "B": "#00ced1",
+    "R": "#d2b48c",
+    "L": "#8b0000",
+    "S": "#708090",
+    "X": "#ff1493",
+    "P": "#00bfff",
+    "O": "#228b22",
+    "+": "#f0f8ff",
+    "E": "#ffd700"
   },
   "map_layout": [
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~.~~~~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~..~...~?~~~~~~~~~~~",
-    "~~~~~~~~~.~~....#~~..~~~~~~~~~~~",
-    "~~~~~~~~.~~#~###........~~~~~~~~",
-    "~~~~~~~~.~...#####.##...~~~~~~~~",
-    "~~~~~~~.~..#.#######.###..~~~~~~",
-    "~~~~~~.~##.############...~~~~~~",
-    "~~~~~.~#..##?#TTT#?T####.~~~~~~~",
-    "~~~~~..######TTT#TT#T###.#.~~~~~",
-    "~~~~.~..###T##TTTTT##T###....~~~",
-    "~~~~~...###TTTTTTTTTTT#####~~~~~",
-    "~~~~~..####?TTTTTTTTT#T####.~~~~",
-    "~~~~.#..#T#TTTTTTTTTT#####.~..~~",
-    "~~~...?###TTTTTTA?TTTT####...~~~",
-    "~~~~~######TTTTT?TTTTTT####.~?~~",
-    "~~~.~..###TTTTTTTTTTTTT##....~~~",
-    "~~~~~######TTTTTTTTTTT###...~~~~",
-    "~~~~~~##?###TTTT?TTTTT#####~.~~~",
-    "~~~~~~..####T#TTTT######.#.~~~~~",
-    "~~~~~~~..#####TT#########.~~~~~~",
-    "~~~~~.....#############..~.~~~~~",
-    "~~~~~~~~.#..####?####..#.~~~~~~~",
-    "~~~~~~~~~.#..####..##...~~~~~~~~",
-    "~~~~~~~~~~~...###..#.~..~~~~~~~~",
-    "~~~~~~~~~~.~..~.?...~.~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~..~.~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    "################################",
+    "#EEEE#SSSS#LLLLLLLL#XXXXXXXXXX+#",
+    "#EEEE#SSSS#LLLLLLLL#XXXXXXXXXX+#",
+    "#....#....#LLLLLLLL#XXXXXXXXXX+#",
+    "#.##......#........#XX..XX..XX #",
+    "#.##...........................#",
+    "#..............................#",
+    "#...BBBBBBBB...................#",
+    "#...BBBBBBBB...................#",
+    "#...BB....BB.......DDDDDDDD....#",
+    "#..................DDDDDDDD....#",
+    "#..................DDDDDDDD....#",
+    "#..................DDDDDDDD....#",
+    "#.......RRRRRRR....DDDDDDDD....#",
+    "#.......RRRRRRR................#",
+    "#.......RRRRRRR................#",
+    "#.......RRRRRRR................#",
+    "#.......RRRRRRR................#",
+    "#..............................#",
+    "#..............................#",
+    "####################...#########",
+    "#OOOOOOOOOOOOOOOOOO#...#OOOOOOO#",
+    "#OOOOOOOOOOOOOOOOOO#...#OOOOOOO#",
+    "#OOOOOPPPPPPPPPPOOO#...#OOOOOOO#",
+    "#OOOOOPPPPPPPPPPOOO.....OOOOOOO#",
+    "#OOOOOPPPPPPPPPPOOO.....OOOOOOO#",
+    "#OOOOOPPPPPPPPPPOOO.....OOOOOOO#",
+    "#OOOOOOOOOOOOOOOOOO.....OOOOOOO#",
+    "#OOOOOOOOOOOOOOOOOO.....OOOOOOO#",
+    "#OOOOOOOOOOOOOOOO..............#",
+    "################################",
+    "################################"
   ],
   "characters": {
-    "John": {
-      "role": "Pilote",
-      "age": 30,
-      "description": "Sérieux, respecte les procédures. Le leader naturel.",
+    "Clem": {
+      "role": "Client",
+      "age": 35,
+      "description": "35 ans, brun, 1.75m, 62kg. En couple avec Mary depuis 8 ans. Veut raviver la flamme. Nerveux mais curieux.",
       "pos": [
-        16,
-        18
+        10,
+        15
       ],
       "energy": 80,
+      "excitation": 0,
+      "alcohol": 0.0,
+      "cigarettes": 0,
       "inventory": [
-        "Uniforme déchiré"
-      ],
-      "gold": 0,
-      "rel": {}
+        "Carte Membre Club",
+        "Préservatifs"
+      ]
     },
-    "Barbie": {
-      "role": "Influenceuse",
-      "age": 20,
-      "description": "Obsédée par son téléphone (inutile ici). Superficielle mais peut surprendre.",
+    "Mary": {
+      "role": "Cliente",
+      "age": 32,
+      "description": "32 ans, brune, 1.56m, 47kg. Sensuelle, un peu timide au début mais aime être regardée.",
       "pos": [
-        17,
-        18
+        11,
+        15
+      ],
+      "energy": 80,
+      "excitation": 0,
+      "alcohol": 0.0,
+      "cigarettes": 0,
+      "inventory": [
+        "Robe de soirée",
+        "Rouge à lèvres"
+      ]
+    },
+    "Chloe": {
+      "role": "Hôtesse",
+      "age": 24,
+      "description": "Accueil, vestiaire. Souriante et professionnelle. Gardienne des téléphones.",
+      "pos": [
+        2,
+        2
       ],
       "energy": 90,
+      "excitation": 0,
+      "alcohol": 0.0,
+      "cigarettes": 0,
       "inventory": [
-        "Smartphone (0% batterie)",
-        "Maillot de bain"
-      ],
-      "gold": 0,
-      "rel": {}
+        "Caisse",
+        "Clés Vestiaire"
+      ]
     },
-    "Ken": {
-      "role": "Docteur en Électronique",
+    "Lola": {
+      "role": "Barmaid",
+      "age": 28,
+      "description": "Sexy, efficace. Sert des cocktails forts.",
+      "pos": [
+        6,
+        9
+      ],
+      "energy": 90,
+      "excitation": 10,
+      "alcohol": 0.0,
+      "cigarettes": 0,
+      "inventory": [
+        "Shaker",
+        "Torchons"
+      ]
+    },
+    "Mike": {
+      "role": "Barman",
+      "age": 30,
+      "description": "Charismatique, jongle avec les bouteilles. Complice de Lola.",
+      "pos": [
+        7,
+        9
+      ],
+      "energy": 90,
+      "excitation": 5,
+      "alcohol": 0.0,
+      "cigarettes": 0,
+      "inventory": [
+        "Décapsuleur",
+        "Tequila"
+      ]
+    },
+    "Igor": {
+      "role": "Videur",
       "age": 45,
-      "description": "Grand inventeur, voyageur expérimenté. Capable de réparer la radio.",
+      "description": "Imposant, surveille l'entrée et la salle. Calme mais dissuasif.",
+      "pos": [
+        3,
+        2
+      ],
+      "energy": 95,
+      "excitation": 0,
+      "alcohol": 0.0,
+      "cigarettes": 0,
+      "inventory": [
+        "Oreillette",
+        "Lampe Torche"
+      ]
+    },
+    "Marc": {
+      "role": "Client",
+      "age": 42,
+      "description": "Habitué. Regard prédateur mais poli. En couple avec Sophie.",
       "pos": [
         15,
-        18
+        15
       ],
-      "energy": 70,
-      "inventory": [
-        "Lunettes cassées"
+      "energy": 85,
+      "excitation": 15,
+      "alcohol": 0.2,
+      "cigarettes": 0,
+      "inventory": []
+    },
+    "Sophie": {
+      "role": "Cliente",
+      "age": 39,
+      "description": "Élégante, très ouverte. Cherche à initier les nouveaux.",
+      "pos": [
+        16,
+        15
       ],
-      "gold": 0,
-      "rel": {}
+      "energy": 85,
+      "excitation": 20,
+      "alcohol": 0.1,
+      "cigarettes": 0,
+      "inventory": []
     }
   },
   "loot_table": [
-    "Mallette de premiers secours",
-    "Bouteille d'eau",
-    "Radio cassée",
-    "Couteau suisse",
-    "Conserve",
-    "Batterie externe",
-    "Vêtements",
-    "Machette rouillée"
+    "Coupe de Champagne",
+    "Huile de Massage",
+    "Fouet",
+    "Menottes",
+    "Vibromasseur",
+    "Cigarette",
+    "Cocktail Signature"
   ]
 }

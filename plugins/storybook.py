@@ -95,36 +95,43 @@ def extract_facts_ai(logs_text):
     except Exception:
         return []
 
-def narrate_page_segment(events, previous_context="", key_facts=""):
+def narrate_continuous(current_chapter_text, turn_logs, world_seed, key_facts=""):
     """
-    Génère un segment narratif (partie de page) via Gemini.
-    Mode : Roman / Littéraire.
+    Génère la suite de l'histoire en se basant sur TOUT le chapitre en cours.
+    Assure une continuité parfaite.
     """
     client = get_gemini_client()
     if not client:
-        yield narrate_turn_local(events)
-        return
+        return narrate_turn_local(turn_logs) # Fallback simple
 
-    context = prepare_prompt_ai(events)
+    # Prompt avec Contexte Max
+    # Prompt Style Bande Dessinée / Roman Graphique
     prompt = f"""
-    CONTEXTE: Jeu Survival "Crash sur l'Île". Style : Roman d'Aventure sombre / Realiste.
+    ROLE: Scénariste de Bande Dessinée Adulte / Roman Graphique (Style "Blacksad" ou "Thorgal" moderne).
     
-    MEMOIRE (Faits Marquants) :
+    CONTEXTE DU MONDE:
+    {world_seed['description']}
+    
+    MEMOIRE (Faits Importants Passés) :
     {key_facts}
     
-    PRECEDEMMENT (Style et Ton) :
-    {previous_context}
+    CHAPITRE EN COURS (Continuité) :
+    {current_chapter_text[-3000:]} 
     
-    NOUVELLES ACTIONS (À Raconter) : 
-    {context}
+    NOUVELLES ACTIONS DES PERSONNAGES (Raw Logs) :
+    {turn_logs}
     
-    TACHE: Écris la suite du roman.
-    CONSIGNES :
-    - Fais un VRAI paragraphe de roman (environ 10-15 lignes).
-    - Décris l'atmosphère, les ressentis, le décor.
-    - Prends le temps de poser l'ambiance.
-    - NE RÉPÈTE PAS ce qui a déjà été dit.
-    - Sois littéraire, pas juste factuel.
+    TACHE :
+    - Écris la suite sous forme de SCRIPT DE BD (Panels et Dialogues).
+    - **STYLE** : Visuel, dynamique, dialogues percutants.
+    - **LANGAGE** : Soutenu, élégant et soigné. Évite absolument le langage familier ou l'argot.
+    - **FORMAT** :
+      *   **PANEL [Lieu] :** Description courte et visuelle de l'action.
+      *   **[Perso] :** Dialogue.
+    
+    - **SPATIALITÉ** : Respecte scrupuleusement les zones (Bar, Piste...).
+    - **COHÉRENCE** : Les ivres balbutient, les timides hésitent.
+    - Évite les descriptions psychologiques vagues ("Il pense que..."). Montre-le par l'action ("Il serre les poings").
     """
     
     try:
@@ -136,23 +143,22 @@ def narrate_page_segment(events, previous_context="", key_facts=""):
             if chunk.text:
                 yield chunk.text
     except Exception as e:
-        yield f"⚠️ *Relais Local...* "
-        yield narrate_turn_local(events)
+        yield f"[Erreur Narrateur: {e}]"
 
-def narrate_turn(events):
+def analyze_chapter(full_chapter_text, villagers_data):
     """
-    Récit d'ambiance via Gemini (Cloud).
+    Analyse un chapitre TERMINÉ pour en extraire des souvenirs.
     """
     client = get_gemini_client()
-    if not client:
-        return None
-
-    context = prepare_prompt_ai(events)
+    if not client: return []
+    
     prompt = f"""
-    CONTEXTE: Jeu Survival "Crash sur l'Île".
-    RESUME: {context}
-    TACHE: Narrateur style Film Noir / Survie.
-    CRITIQUE: Un seul paragraphe court (< 3 phrases). Immersif.
+    TACHE: Archiviste.
+    TEXTE A ANALYSER (Chapitre complet):
+    {full_chapter_text}
+    
+    OBJECTIF: Extraire les 3-5 faits majeurs qui ont changé l'histoire ou les personnages.
+    FORMAT: Liste à puces "- [Jour X] Fait..."
     """
     
     try:
@@ -160,42 +166,6 @@ def narrate_turn(events):
             model='models/gemini-3-flash-preview',
             contents=prompt
         )
-        return response.text.strip()
-    except Exception as e:
-        if "429" in str(e):
-            return None
-        return f"(Pause Narrateur... {str(e)[:50]})"
-
-def generate_chapter(day_num, logs, survivors_state):
-    """
-    Génère un chapitre BD quotidien.
-    """
-    client = get_gemini_client()
-    if not client:
-        return "Erreur Clé API"
-
-    survivors_desc = "\n".join([f"- {name}: {data['role']}" for name, data in survivors_state.items()])
-    recent_logs = "\n".join(logs[-50:])
-    
-    prompt = f"""
-    CONTEXTE: Survival Jour {day_num}.
-    CAST: {survivors_desc}
-    LOGS: {recent_logs}
-    Output: SCENARIO BD ADULTE/NOIR. 2 Pages.
-    Pour chaque case: [IMAGE PROMPT] + DIALOGUE.
-    """
-    
-    try:
-        response = client.models.generate_content(
-            model='models/gemini-3-flash-preview',
-            contents=prompt
-        )
-        
-        filename = os.path.join(STORY_DIR, f"chapter_{day_num}.md")
-        with open(filename, "w", encoding='utf-8') as f:
-             f.write(f"# CHAPITRE {day_num}\n\n{response.text}")
-             
-        return f"Chapitre écrit: {filename}"
-        
-    except Exception as e:
-        return f"Erreur Chapitre: {e}"
+        return [l.strip() for l in response.text.split('\n') if l.strip().startswith('-')]
+    except Exception:
+        return []
