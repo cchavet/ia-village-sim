@@ -14,20 +14,21 @@ class SimulationEngine:
             return self.seed['map_legend'].get(char, "Inconnu")
         return "Océan"
 
-    def tick(self, minutes=1):
+    def tick(self, state, minutes=1):
         """
         Avance le temps. Retourne la liste des agents PRETS A JOUER.
+        Requires state object with: world_time, weather, characters.
         """
-        st.session_state.world_time = (st.session_state.world_time + minutes) % 1440
-        current_time = st.session_state.world_time
+        state.world_time = (state.world_time + minutes) % 1440
+        current_time = state.world_time
         
         # Weather chance
         if current_time % 10 == 0:
-             st.session_state.weather = weather.update_weather(st.session_state.weather)
+             state.weather = weather.update_weather(state.weather)
              
         # Find Free Agents
         ready_agents = []
-        for name, v in st.session_state.characters.items():
+        for name, v in state.characters.items():
             busy_until = v.get('busy_until', 0)
             # If busy_until < current_time (accounting for day wrap? Simplified: just linear check)
             # Simplification: Reset busy_until on new day? 
@@ -43,37 +44,37 @@ class SimulationEngine:
         
         return ready_agents
 
-    def jump_to_next_event(self):
+    def jump_to_next_event(self, state):
         """
         Avance jusqu'à la fin de la prochaine action en cours.
         """
-        current = st.session_state.world_time
+        current = state.world_time
         min_busy = 9999
         
-        for v in st.session_state.characters.values():
+        for v in state.characters.values():
             b = v.get('busy_until', current)
             if b > current:
                 if b < min_busy: min_busy = b
         
         if min_busy == 9999: 
-            return self.tick(1) # No one busy? +1
+            return self.tick(state, 1) # No one busy? +1
             
         delta = min_busy - current
         if delta <= 0: delta = 1
         
-        return self.tick(delta)
+        return self.tick(state, delta)
 
-    def run_agents_turn(self, current_chapter_text="", target_agents=None):
+    def run_agents_turn(self, state, current_chapter_text="", target_agents=None):
         """
         Exécute la décision pour les agents spécifiés.
         """
         # Update Time Display
-        current_time_min = st.session_state.world_time
+        current_time_min = state.world_time
         time_str = f"{current_time_min // 60}h{current_time_min % 60:02d}"
 
         # Initialize Stats if needed
         from game.entities import rpg as rpg_system
-        for name, v in st.session_state.characters.items():
+        for name, v in state.characters.items():
             if 'stats' not in v:
                 v['stats'] = rpg_system.init_stats(v['role'])
                 v['xp'] = 0; v['level'] = 1
@@ -83,7 +84,7 @@ class SimulationEngine:
         # Determine who plays
         if target_agents is None:
             # Fallback: All
-            target_agents = list(st.session_state.characters.keys())
+            target_agents = list(state.characters.keys())
             
         if not target_agents:
             return []
@@ -92,9 +93,9 @@ class SimulationEngine:
         import concurrent.futures
         
         # Filter Batches for only target_agents
-        characters_snapshot = st.session_state.characters
-        weather_snapshot = st.session_state.weather
-        llm_instance = st.session_state.llm
+        characters_snapshot = state.characters
+        weather_snapshot = state.weather
+        llm_instance = state.llm
         
         # Create ad-hoc batches for just these agents
         batches = []
@@ -156,7 +157,7 @@ class SimulationEngine:
             # --- DURATION LOGIC ---
             duration = int(decision.get('duration', 15))
             if duration < 5: duration = 5 # Minimum 5 mins
-            v['busy_until'] = (st.session_state.world_time + duration) % 1440
+            v['busy_until'] = (state.world_time + duration) % 1440
             # Handle midnight wrap logic carefully later. For now sim is 1 day.
             
             # ACTIONS ...
@@ -196,7 +197,7 @@ class SimulationEngine:
 
             # --- SOCIAL MECHANIC ---
             target_name = decision.get('target')
-            if target_name and target_name in st.session_state.characters and target_name != name:
+            if target_name and target_name in state.characters and target_name != name:
                 delta = 0
                 if target_skill == "SOCIAL": delta = 5 if skill_success else -2
                 elif action == "DISCUTER" or action == "DRAGUER": delta = 2 
@@ -222,8 +223,8 @@ class SimulationEngine:
             step_logs.append(log_entry)
 
         # 3. Save State (Continuous)
-        st.session_state.logs = step_logs + st.session_state.logs
-        if len(st.session_state.logs) > 500: st.session_state.logs = st.session_state.logs[:500]
-        storage.save_world(st.session_state.characters, st.session_state.world_time, st.session_state.logs, st.session_state.weather)
+        state.logs = step_logs + state.logs
+        if len(state.logs) > 500: state.logs = state.logs[:500]
+        storage.save_world(state.characters, state.world_time, state.logs, state.weather)
         
         return step_logs

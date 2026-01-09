@@ -82,7 +82,7 @@ def run_step(target_agents=None):
     full_text = "\n".join(st.session_state.current_chapter)
     
     with st.spinner(f"🧠 {len(target_agents)} Agents réfléchissent..."):
-        step_logs = engine.run_agents_turn(current_chapter_text=full_text, target_agents=target_agents)
+        step_logs = engine.run_agents_turn(st.session_state, current_chapter_text=full_text, target_agents=target_agents)
     
     # 2. Narration (Storybook)
     with st.spinner("✍️ Le Narrateur écrit l'histoire..."):
@@ -196,10 +196,10 @@ if st.session_state.running:
     # Tick Engine
     if turbo_mode:
         # ASYNC SPEEDRUN: Jump to next finished action
-        ready_agents = engine.jump_to_next_event()
+        ready_agents = engine.jump_to_next_event(st.session_state)
     else:
         # PROPORTIONAL TIME: Tick by speed_min
-        ready_agents = engine.tick(minutes=speed_min)
+        ready_agents = engine.tick(st.session_state, minutes=speed_min)
     
     # Check if Agents need to play
     if ready_agents:
