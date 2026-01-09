@@ -29,6 +29,15 @@ class SimulationEngine:
         
         st.session_state.weather = weather.update_weather(st.session_state.weather)
         
+        # SELF-HEALING: Init RPG Stats
+        from plugins import rpg_system
+        for name, v in st.session_state.characters.items():
+            if 'stats' not in v:
+                v['stats'] = rpg_system.init_stats(v['role'])
+                v['xp'] = 0
+                v['level'] = 1
+                # print(f"[Init RPG] {name} initialized.")
+        
         step_logs = []
         
         # 2. Agents Turn (PARALLEL)
@@ -109,7 +118,8 @@ class SimulationEngine:
                 # Format Result List
                 batch_results = []
                 for name, decis in decisions_map.items():
-                    batch_results.append((name, decis, chars_data[name]))
+                    if name in chars_data:
+                        batch_results.append((name, decis, chars_data[name]))
                 return batch_results
             except Exception as e:
                 print(f"Error Batch {agent_names}: {e}")
@@ -141,26 +151,65 @@ class SimulationEngine:
             new_y = max(0, min(self.grid_size-1, dest_y))
             v['pos'] = [new_x, new_y]
             
-            # Stats (Generic Fantasy)
+            # Stats (Generic Fantasy) & RPG Recovery
             if action == "REPOS":
                 v['energy'] = min(100, v.get('energy', 0) + 10)
                 if 'mana' in v: v['mana'] = min(200, v.get('mana', 0) + 10)
             else:
                 v['energy'] = max(0, v.get('energy', 100) - 2)
             
+            # --- RPG MECHANIC: SKILL CHECK ---
+            target_skill = decision.get('target_skill')
+            rpg_log = ""
+            skill_success = False
+            
+            if target_skill and target_skill in rpg_system.SKILLS:
+                # Roll
+                check = rpg_system.check_skill(v, target_skill)
+                status = "SUCCÈS" if check['success'] else "ÉCHEC"
+                skill_success = check['success']
+                rpg_log = f"\n> 🎲 **{target_skill}**: {check['roll']} + {check['bonus']} = {check['total']} (Diff {check['difficulty']}) -> **{status}**"
+                
+                if check['success']:
+                    # Gain XP
+                    xp_logs = rpg_system.gain_xp(v, 20) # 20 XP per success
+                    if xp_logs:
+                        rpg_log += f" | {' '.join(xp_logs)}"
+                else:
+                    # Penalty?
+                    rpg_log += " | (Fatigue +2)"
+                    v['energy'] = max(0, v.get('energy', 0) - 2)
+
+            # --- SOCIAL MECHANIC ---
+            target_name = decision.get('target')
+            if target_name and target_name in st.session_state.characters and target_name != name:
+                # Determine Delta based on Skill Check (if any) or Default
+                delta = 0
+                if target_skill == "SOCIAL":
+                     delta = 5 if skill_success else -2
+                elif action == "DISCUTER" or action == "DRAGUER":
+                     delta = 2 # Default small gain
+                
+                if delta != 0:
+                    new_val, status = relations.update_affinity(v, target_name, delta)
+                    # Bi-directional? Maybe half for the other? For now uni-directional.
+                    rpg_log += f"\n> ❤️ **Relation {target_name}**: {delta:+d} ({status}: {new_val})"
+
             # Effects
             action_msg = ""
             if action == "BOIRE": action_msg = "🍺"
             if action == "MAGIE": action_msg = "✨"
             if action == "ETUDIER": action_msg = "📖"
+            if action == "DISCUTER": action_msg = "💬"
             
-            # Reaction Log
             if decision['reaction']: action_msg += f" \"{decision['reaction']}\""
             
             # Log
             # Include Location for Narrator Context
             terrain_display = self.get_terrain_at(new_x, new_y)
-            log_entry = f"**{time_str} - {name}** ({terrain_display}) [❤️{v.get('excitation',0)}% 🍷{v.get('alcohol',0)}g]\n*{decision['pensee']}*\n> {action} {action_msg}"
+            # Display Level/XP instead of old stats
+            stats_display = f"Lvl {v.get('level', 1)} | XP {v.get('xp', 0)}"
+            log_entry = f"**{time_str} - {name}** ({terrain_display}) [{stats_display}]\n*{decision['pensee']}*\n> {action} {action_msg}{rpg_log}"
             step_logs.append(log_entry)
 
         # FIXED TIME STEP (User Request: 1 turn = 1 hour)

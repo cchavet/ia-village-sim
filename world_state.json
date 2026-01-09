@@ -1,147 +1,355 @@
 {
     "characters": {
-        "Clem": {
-            "role": "Client",
-            "age": 35,
-            "description": "35 ans, brun, 1.75m, 62kg. En couple avec Mary depuis 8 ans. Veut raviver la flamme. Nerveux mais curieux.",
-            "pos": [
-                11,
-                16
-            ],
-            "energy": 80,
-            "excitation": 0,
-            "alcohol": 0.0,
-            "cigarettes": 0,
-            "inventory": [
-                "Carte Membre Club",
-                "Préservatifs"
-            ]
-        },
-        "Mary": {
-            "role": "Cliente",
-            "age": 32,
-            "description": "32 ans, brune, 1.56m, 47kg. Sensuelle, un peu timide au début mais aime être regardée.",
+        "Alaric": {
+            "role": "Étudiant",
+            "age": 17,
+            "description": "17 ans, cheveux en bataille, cicatrice. Courageux mais impulsif. Cherche à prouver sa valeur.",
             "pos": [
                 10,
+                4
+            ],
+            "energy": 86,
+            "excitation": 0,
+            "mana": 100,
+            "inventory": [
+                "Baguette en Houx",
+                "Carte du Maraudeur"
+            ],
+            "stats": {
+                "MAGIE": 4,
+                "SOCIAL": 5,
+                "PHYSIQUE": 5,
+                "SAVOIR": 4
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
+        },
+        "Elara": {
+            "role": "Professeur",
+            "age": 45,
+            "description": "45 ans, stricte, robes émeraude. Enseigne la métamorphose. Cache un secret.",
+            "pos": [
+                16,
+                16
+            ],
+            "energy": 76,
+            "excitation": 0,
+            "mana": 150,
+            "inventory": [
+                "Baguette Ancienne",
+                "Montre à Gousset"
+            ],
+            "stats": {
+                "MAGIE": 8,
+                "SOCIAL": 4,
+                "PHYSIQUE": 2,
+                "SAVOIR": 9
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
+        },
+        "Thorne": {
+            "role": "Garde-Chasse",
+            "age": 60,
+            "description": "Géant hirsute, bourru mais coeur d'or. Vit près de la forêt.",
+            "pos": [
+                30,
+                5
+            ],
+            "energy": 89,
+            "excitation": 0,
+            "mana": 50,
+            "inventory": [
+                "Parapluie Rose",
+                "Lanterne"
+            ],
+            "stats": {
+                "MAGIE": 1,
+                "SOCIAL": 2,
+                "PHYSIQUE": 8,
+                "SAVOIR": 3
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
+        },
+        "Luna": {
+            "role": "Étudiante",
+            "age": 16,
+            "description": "Rêveuse, voit des créatures invisibles. Très douée en sortilèges.",
+            "pos": [
+                15,
+                12
+            ],
+            "energy": 81,
+            "excitation": 0,
+            "mana": 90,
+            "inventory": [
+                "Baguette en Cerisier",
+                "Spectrespecs"
+            ],
+            "stats": {
+                "MAGIE": 4,
+                "SOCIAL": 5,
+                "PHYSIQUE": 5,
+                "SAVOIR": 4
+            },
+            "xp": 20,
+            "level": 1,
+            "rel": {}
+        },
+        "Draco": {
+            "role": "Étudiant",
+            "age": 17,
+            "description": "Arrogant, riche, talentueux. Rival d'Alaric.",
+            "pos": [
+                16,
+                10
+            ],
+            "energy": 86,
+            "excitation": 0,
+            "mana": 95,
+            "inventory": [
+                "Baguette en Aubépine",
+                "Balai de Course"
+            ],
+            "stats": {
+                "MAGIE": 4,
+                "SOCIAL": 5,
+                "PHYSIQUE": 5,
+                "SAVOIR": 4
+            },
+            "xp": 20,
+            "level": 1,
+            "rel": {}
+        },
+        "Garrick": {
+            "role": "Vendeur de Baguettes",
+            "age": 70,
+            "description": "Yeux perçants, mémoire encyclopédique des baguettes.",
+            "pos": [
+                2,
+                6
+            ],
+            "energy": 56,
+            "excitation": 0,
+            "mana": 120,
+            "inventory": [
+                "Mètre Ruban",
+                "Plume de Phénix"
+            ],
+            "stats": {
+                "MAGIE": 3,
+                "SOCIAL": 8,
+                "PHYSIQUE": 3,
+                "SAVOIR": 6
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
+        },
+        "Mira": {
+            "role": "Apothicaire",
+            "age": 50,
+            "description": "Mains tachées d'encre et de potions. Vend des ingrédients rares.",
+            "pos": [
+                2,
+                12
+            ],
+            "energy": 64,
+            "excitation": 0,
+            "mana": 80,
+            "inventory": [
+                "Chaudron",
+                "Bave de Crapaud"
+            ],
+            "stats": {
+                "MAGIE": 3,
+                "SOCIAL": 3,
+                "PHYSIQUE": 3,
+                "SAVOIR": 3
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
+        },
+        "Filius": {
+            "role": "Bibliothécaire",
+            "age": 110,
+            "description": "Minuscule, perché sur des livres. Connaît tous les sortilèges.",
+            "pos": [
+                16,
+                6
+            ],
+            "energy": 46,
+            "excitation": 0,
+            "mana": 180,
+            "inventory": [
+                "Grimoire Interdit",
+                "Plume Enchantée"
+            ],
+            "stats": {
+                "MAGIE": 8,
+                "SOCIAL": 4,
+                "PHYSIQUE": 2,
+                "SAVOIR": 9
+            },
+            "xp": 20,
+            "level": 1,
+            "rel": {}
+        },
+        "Peeves": {
+            "role": "Esprit Frappeur",
+            "age": 500,
+            "description": "Fantôme chaotique, adore les farces. Flotte à travers les murs.",
+            "pos": [
+                15,
                 15
             ],
-            "energy": 80,
+            "energy": 96,
             "excitation": 0,
-            "alcohol": 0.0,
-            "cigarettes": 0,
+            "mana": 200,
             "inventory": [
-                "Robe de soirée",
-                "Rouge à lèvres"
-            ]
-        },
-        "Chloe": {
-            "role": "Hôtesse",
-            "age": 24,
-            "description": "Accueil, vestiaire. Souriante et professionnelle. Gardienne des téléphones.",
-            "pos": [
-                1,
-                1
+                "Bombabouse",
+                "Craie"
             ],
-            "energy": 90,
+            "stats": {
+                "MAGIE": 3,
+                "SOCIAL": 3,
+                "PHYSIQUE": 3,
+                "SAVOIR": 3
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
+        },
+        "Baron": {
+            "role": "Fantôme",
+            "age": 900,
+            "description": "Sinistre, couvert de chaînes argentées. Effrayant.",
+            "pos": [
+                10,
+                10
+            ],
+            "energy": 96,
             "excitation": 0,
-            "alcohol": 0.0,
-            "cigarettes": 0,
-            "inventory": [
-                "Caisse",
-                "Clés Vestiaire"
-            ]
+            "mana": 100,
+            "inventory": [],
+            "stats": {
+                "MAGIE": 6,
+                "SOCIAL": 7,
+                "PHYSIQUE": 0,
+                "SAVOIR": 10
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
         },
-        "Lola": {
-            "role": "Barmaid",
-            "age": 28,
-            "description": "Sexy, efficace. Sert des cocktails forts.",
+        "Crocdur": {
+            "role": "Chien",
+            "age": 8,
+            "description": "Grand mâtin poltron. Bave beaucoup. Fidèle à Thorne.",
             "pos": [
-                6,
-                9
+                23,
+                8
             ],
-            "energy": 90,
-            "excitation": 10,
-            "alcohol": 0.0,
-            "cigarettes": 0,
-            "inventory": [
-                "Shaker",
-                "Torchons"
-            ]
-        },
-        "Mike": {
-            "role": "Barman",
-            "age": 30,
-            "description": "Charismatique, jongle avec les bouteilles. Complice de Lola.",
-            "pos": [
-                8,
-                9
-            ],
-            "energy": 90,
-            "excitation": 5,
-            "alcohol": 0.0,
-            "cigarettes": 0,
-            "inventory": [
-                "Décapsuleur",
-                "Tequila"
-            ]
-        },
-        "Igor": {
-            "role": "Videur",
-            "age": 45,
-            "description": "Imposant, surveille l'entrée et la salle. Calme mais dissuasif.",
-            "pos": [
-                3,
-                2
-            ],
-            "energy": 95,
+            "energy": 76,
             "excitation": 0,
-            "alcohol": 0.0,
-            "cigarettes": 0,
+            "mana": 0,
+            "inventory": [],
+            "stats": {
+                "MAGIE": 3,
+                "SOCIAL": 3,
+                "PHYSIQUE": 3,
+                "SAVOIR": 3
+            },
+            "xp": 20,
+            "level": 1,
+            "rel": {}
+        },
+        "Rosmerta": {
+            "role": "Tenancière",
+            "age": 40,
+            "description": "Accueillante, potins du village. Sert la meilleure Bierraubeurre.",
+            "pos": [
+                4,
+                5
+            ],
+            "energy": 93,
+            "excitation": 0,
+            "mana": 30,
             "inventory": [
-                "Oreillette",
-                "Lampe Torche"
-            ]
-        },
-        "Marc": {
-            "role": "Client",
-            "age": 42,
-            "description": "Habitué. Regard prédateur mais poli. En couple avec Sophie.",
-            "pos": [
-                15,
-                16
+                "Chope",
+                "Torchon"
             ],
-            "energy": 85,
-            "excitation": 15,
-            "alcohol": 0.2,
-            "cigarettes": 0,
-            "inventory": []
+            "stats": {
+                "MAGIE": 3,
+                "SOCIAL": 8,
+                "PHYSIQUE": 3,
+                "SAVOIR": 6
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
         },
-        "Sophie": {
-            "role": "Cliente",
-            "age": 39,
-            "description": "Élégante, très ouverte. Cherche à initier les nouveaux.",
+        "Rusard": {
+            "role": "Concierge",
+            "age": 60,
+            "description": "Aigri, déteste les élèves. Surveille les couloirs avec sa chatte.",
             "pos": [
-                15,
-                16
+                20,
+                20
             ],
-            "energy": 85,
-            "excitation": 20,
-            "alcohol": 0.1,
-            "cigarettes": 0,
-            "inventory": []
+            "energy": 64,
+            "excitation": 0,
+            "mana": 0,
+            "inventory": [
+                "Lanterne",
+                "Trousseau de Clés"
+            ],
+            "stats": {
+                "MAGIE": 1,
+                "SOCIAL": 2,
+                "PHYSIQUE": 8,
+                "SAVOIR": 3
+            },
+            "xp": 0,
+            "level": 1,
+            "rel": {}
         }
     },
-    "world_time": 1201,
+    "world_time": 1261,
     "logs": [
-        "**20h01 - Lola** (Corridor/Sol (Gris)) [❤️10% 🍷0.0g]\n*Ce Clem... Il me fixe comme un veuf. Il faut que je sois au top. Un sourire, un regard... ça pourrait être intéressant.*\n> PARLER  \"Excuse-moi, tu as l'air un peu perdue ? Tout le monde est un peu nerveux au début, non ?\"",
-        "**20h01 - Mary** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Cette robe est un peu... osée, non ? Clem me regarde comme si sa vie en dépendait. J'aime ça. Je dois rester calme.*\n> SE DEPLACER  \"Je me déplace lentement vers le bar, observant Clem de temps en temps, un sourire discret sur les lèvres.\"",
-        "**20h01 - Mike** (Corridor/Sol (Gris)) [❤️5% 🍷0.0g]\n*Bon, le temps de faire bonne figure et observer. Mary est magnifique... et un peu nerveuse. Peut-être un sourire ?*\n> PARLER  \"Mike ajuste son tablier, lui adresse un sourire chaleureux et un clin d'œil discret. 'Soirée promet d'être chaude, n'est-ce pas ?'\"",
-        "**20h01 - Clem** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Mary est magnifique... cette robe la rend presque... trop sexy. J'espère qu'elle appréciera ce soir. Je dois être à l'aise, détendu. Mais aussi... attentif.*\n> OBSERVER  \"Je la regarde, son sourire est éclatant. Je suis hypnotisé.\"",
-        "**20h01 - Chloe** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Bon, 20h01. Il faut que je me fasse la Chloe efficace. Le temps presse, les premiers clients arrivent. J'espère qu'ils seront sympas.*\n> PARLER  \"Bonjour ! Bienvenue à l'Eros Club. Vous avez une réservation ? Ou vous souhaitez juste vous inscrire pour la soirée ?\"",
-        "**20h01 - Sophie** (Corridor/Sol (Gris)) [❤️20% 🍷0.1g]\n*Ce lieu est exactement ce que j'espérais. L'atmosphère est incroyablement sensuelle. Mary est magnifique, et cette robe... Il faut que je l'observe un peu plus attentivement.*\n> OBSERVER  \"Je me penche légèrement pour mieux admirer Mary, un sourire charmeur aux lèvres.\"",
-        "**20h01 - Igor** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Cette ambiance... ça promet. Mary est magnifique, mais je dois rester professionnel. Et surtout, pas trop d'alcool.*\n> OBSERVER  \"J'observe la rue, les clients qui entrent, essayant de jauger l'ambiance et de repérer d'éventuels problèmes. Chloe semble apprécier le spectacle. \"",
-        "**20h01 - Marc** (Corridor/Sol (Gris)) [❤️15% 🍷0.2g]\n*Cette robe sur Mary... c'est un appel. Et ce parfum, un mélange irrésistible. 15/100, mais ça monte.*\n> PARLER  \"Marc s'approche de Mary, un sourire poli mais intense sur les lèvres. \"Vous avez l'air d'apprécier l'ambiance, mademoiselle?\"\"",
-        "*[MOTEUR] Intensité : HAUTE. Prochain saut : +1 min.*"
+        "**21h01 - Rusard** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Erreur Invalid control character at: line 13 column 565 (char 1520)*\n> RIEN ",
+        "**21h01 - Alaric** (Mur/Pierre (Noir)) [Lvl 1 | XP 0]\n*Cette ruelle est inquiétante. Et cette boutique... 'Eros'? On dirait un piège. Je dois être prudent.*\n> SE DEPLACER  \"Alaric, suivant la prudence instinctive de Thorne, avance prudemment vers la boutique 'Eros'. 'Le Faucon Noir'  s'arrête à quelques pas, observant attentivement la porte et les environs. Il est prêt à fuir si la situation se dégrade, mais il est déterminé à en savoir plus sur cette place inquiétante. Il teste avec un sort d'exploration simple, 'Luces Éphémères', pour éclairer le périmètre immédiat et repérer d'éventuels dangers.\"",
+        "**21h01 - Elara** (Bibliothèque (Bleu)) [Lvl 1 | XP 0]\n*Cette perturbation... elle est subtile, mais persistante. Je dois l'étudier. Peut-être une contamination magique.*\n> SE DEPLACER  \"Elara, les bras croisés, se dirige vers la boutique 'Eros', son balai, *Ombre Nocturne*, flottant silencieusement à ses côtés. Son expression est déterminée, un mélange de curiosité et de méfiance.\"",
+        "**21h01 - Garrick** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**21h01 - Mira** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Une autre boutique... à surveiller. Il est possible qu'elle offre des informations pertinentes.*\n> SE DEPLACER  \"Mira s'approche de Thorne, son balai, *Étoile Filante*, sifflant discrètement. Elle observe la porte avec une curiosité prudente. 'Une porte incrustée de magie... Cela pourrait être une source de revenus intéressantes... ou un danger.'\"\n> 🎲 **PHYSIQUE**: 11 + 3 = 14 (Diff 15) -> **ÉCHEC** | (Fatigue +2)",
+        "**21h01 - Peeves** (Bibliothèque (Bleu)) [Lvl 1 | XP 0]\n*Une perturbation magique... intéressant. Il faudra bien que je cause un peu de dégâts.*\n> RIEN  \"Peeves se déplace discrètement entre les bâtiments, laissant derrière lui une traînée de fumée et des rires démoniaques. Il se pose sur le rebord de la boutique 'Eros', observant les personnages avec un rictus satisfait.\"",
+        "**21h01 - Baron** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**21h01 - Crocdur** (Pavés/Rue (Gris)) [Lvl 1 | XP 20]\n*Odeur... Strange.  Je suis inquiet.  Je vais rester près de Thorne.*\n> SE DEPLACER  \"Crocdur, avec un grognement, se dirige vers Thorne, sa queue battant l'air, restant vigilant.\"\n> 🎲 **PHYSIQUE**: 17 + 3 = 20 (Diff 15) -> **SUCCÈS** | Gagne 20 XP",
+        "**21h01 - Thorne** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Cette boutique... 'Eros'. C'est étrange, et cette odeur. Ça sent la sorcellerie corrompue. Mary, tu sens ça aussi?*\n> DISCUTER 💬 \"Mary, alertée, fronce les sourcils et renifle l'air. ‘Je le sens, Thorne. Quelque chose d'étrangement… pourri. Comme de la magie noire stagnante.’ Soudain, une brève lueur turquoise émerge de la porte de la boutique, se dissipant aussitôt. ‘C’est… artificiel.’\"\n> 🎲 **SOCIAL**: 5 + 2 = 7 (Diff 15) -> **ÉCHEC** | (Fatigue +2)",
+        "**21h01 - Luna** (Pavés/Rue (Gris)) [Lvl 1 | XP 20]\n*Il y a quelque chose de mal ici. Je vais essayer de comprendre ce qui se passe. Peut-être que je peux aider à désactiver cette énergie.*\n> ETUDIER 📖 \"Luna s'approche prudemment de Clem, observant attentivement la baguette en cerisier et les runes luminescentes.  'Par la magie et l'étude, je vais essayer de déchiffrer la source de cette perturbation.' \"\n> 🎲 **MAGIE**: 13 + 4 = 17 (Diff 15) -> **SUCCÈS** | Gagne 20 XP",
+        "**21h01 - Draco** (Pavés/Rue (Gris)) [Lvl 1 | XP 20]\n*Ce genre de boutiques... ça ne m'intéresse pas. Ça sent le trouble. Je vais rester à l'écart.*\n> SE DEPLACER  \"Draco, sans prononcer un mot, se retire d'un pas rapide, son balai *Éclair d'Argent* le portant loin de la boutique 'Eros'.\"",
+        "**21h01 - Filius** (Grande Salle (Violet)) [Lvl 1 | XP 20]\n*Silence... Une concentration intense. Quelque chose d'étrange se produit près de cette porte. Une signature magique, faible mais identifiable...*\n> ETUDIER 📖 \"\"Filius, assis sur son butin de livres, ajuste ses lunettes et se penche vers la porte, ses petites mains agitant des instruments magiques. Il commence à scanner l'atmosphère, cherchant à déchiffrer le mystère...\"\"\"\n> 🎲 **MAGIE**: 17 + 8 = 25 (Diff 15) -> **SUCCÈS** | Gagne 20 XP",
+        "**21h01 - Rosmerta** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Des étudiants ? Ça sent le bazar. Je vais leur servir une bière. Ils se calmeront peut-être.*\n> REPOS  \"\"Rosmerta, avec un sourire accueillant, commence à préparer une bière, le cliquetis du cuivre résonnant dans la rue. Elle espère que cette simple offrande apaisera les tensions...\"\"\"",
+        "*[MOTEUR] Eclipse Temporelle : +60 min.*",
+        "**20h01 - Luna** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Cette ruelle... l'enseigne 'Eros'... C'est bizarre. Je sens quelque chose d'étrange. Peut-être que Draco a raison de se montrer prudent.*\n> SE DEPLACER  \"Elle se dirige vers Draco, observant attentivement les environs.\"",
+        "**20h01 - Draco** (Pavés/Rue (Gris)) [Lvl 1 | XP 20]\n*Enfin, Mary et Luna. J'espère qu'ils ne sont pas trop gênants. Il faut que je vérifie si Alaric est ici.*\n> EXPLORER  \"Il scrute la ruelle, à la recherche d'Alaric, utilisant son balai de course pour se déplacer rapidement.\"\n> 🎲 **PHYSIQUE**: 16 + 5 = 21 (Diff 15) -> **SUCCÈS** | Gagne 20 XP",
+        "**20h01 - Elara** (Bibliothèque (Bleu)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Alaric** (Grande Salle (Violet)) [Lvl 1 | XP 0]\n*Cette ruelle est étrange... et cette boutique, 'Eros'... Mary a l'air nerveuse.*\n> SE DEPLACER  \"Ils s'avancent prudemment dans la ruelle, Alaric scrutant les environs. L'air est lourd et une odeur plus forte de musc et de jasmin émane de la boutique. Il remarque une petite porte en bois à l'arrière de la boutique, discrètement cachée.\"",
+        "**20h01 - Thorne** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Cette ruelle est étrangement parfumée. Et cette enseigne... 'Eros'? Cela ne sent pas bon.*\n> SE DEPLACER  \"Il ajuste son chapeau de trappeur et observe Clem et Mary avec méfiance.\"",
+        "**20h01 - Peeves** (Bibliothèque (Bleu)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Baron** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Crocdur** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Garrick** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Mira** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Rusard** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Encore des étudiants. Ils vont sûrement faire des bêtises... Je vais observer leur comportement.*\n> REGARDER  \"Rusard, avec sa chatte Minuit, fixe attentivement Clem et Mary, scrutant leurs visages et leurs mouvements avec un air méfiant. Minuit se frotte à ses jambes, lui ronronnant contre la jambe.\"\n> 🎲 **PHYSIQUE**: 6 + 8 = 14 (Diff 15) -> **ÉCHEC** | (Fatigue +2)",
+        "**20h01 - Filius** (Grande Salle (Violet)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "**20h01 - Rosmerta** (Pavés/Rue (Gris)) [Lvl 1 | XP 0]\n*Attend...*\n> RIEN ",
+        "*[MOTEUR] Eclipse Temporelle : +60 min.*"
     ],
-    "weather": "Chaud"
+    "weather": "Brumeux 🌫️"
 }

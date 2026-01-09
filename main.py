@@ -132,25 +132,19 @@ def end_chapter():
     chap_num = len(st.session_state.archived_chapters) + 1
     st.session_state.current_chapter = [f"**CHAPITRE {chap_num}**\n\n"]
     st.toast(f"Nouveau Chapitre : {chap_num}")
-    
-    # PDF Update
-    try:
-        from plugins import publisher
-        publisher.publish_book_pdf(
-            SEED['scenario_name'], 
-            st.session_state.archived_chapters,
-            output_filename=f"story/{SEED['scenario_name'].replace(' ','_')}.pdf"
-        )
-        st.toast("📚 Livre mis à jour !")
-    except Exception as e:
-        st.error(f"Erreur PDF: {e}")
 
 # --- RENDU UI ---
 ui.inject_custom_css()
 
+# DISPLAY MODE TOGGLE
+show_logs = st.sidebar.checkbox("Afficher Logs RPG (Technique)", value=True)
+
 # Dashboard Render
-# Show ONLY the latest text block (Live Feed behavior)
-if st.session_state.current_chapter:
+if show_logs:
+    # Show last 20 logs reversed (or normal?)
+    # usually logs are appended. let's show last 30 for context.
+    latest_text = "\n\n".join(st.session_state.logs[-30:])
+elif st.session_state.current_chapter:
     latest_text = st.session_state.current_chapter[-1]
 else:
     latest_text = "En attente..."
@@ -173,80 +167,4 @@ with c2:
     if st.button("▶ AVANCER (1 TOUR)"):
         with st.spinner("Simulation & Écriture..."):
             run_step()
-        st.rerun()
-
-if st.checkbox("Mode Auto (Expérimental)"):
-    import time
-    time.sleep(1)
-    run_step()
-    st.rerun()
-
-# --- MAGIC GENERATOR ---
-with st.expander("🔮 MAGIE : GÉNÉRATION INTÉGRALE DU TOME (BATCH)", expanded=False):
-    st.write("Génère tous les tours jusqu'à 04h00 du matin (Fin de soirée) en une seule passe.")
-    
-    if st.button("🚀 LANCER LA GÉNÉRATION (Be Patient!)"):
-        # Target: 04h00 Next Day. 
-        # Logic: If now < 04h00 (240 min), run until 240. 
-        # If now > 240 (e.g. 20h00 = 1200), run until 1440 then until 240.
-        
-        current_min = st.session_state.world_time
-        target_min = 240 # 04h00
-        
-        # Calculate Total Duration (Minutes)
-        if current_min < target_min:
-            total_duration = target_min - current_min
-        else:
-            total_duration = (1440 - current_min) + target_min
-            
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        
-        elapsed = 0
-        safety_max_turns = 1000
-        turn_count = 0
-        
-        while elapsed < total_duration and turn_count < safety_max_turns:
-            # Capture Previous Time
-            t_prev = st.session_state.world_time
-            
-            # Run Turn
-            status_text.text(f"Génération Tour {turn_count+1} (Accumulé {elapsed}/{total_duration} min) ... Heure : {st.session_state.world_time//60}h{st.session_state.world_time%60:02d}")
-            run_step()
-            turn_count += 1
-            
-            # Calculate Delta (Handle Midnight Wrap)
-            t_curr = st.session_state.world_time
-            if t_curr < t_prev: # Rollover 23h59 -> 00h
-                 delta = (1440 - t_prev) + t_curr
-            else:
-                 delta = t_curr - t_prev
-            
-            elapsed += delta
-            
-            # Update Progress
-            prog = min(1.0, elapsed / total_duration)
-            progress_bar.progress(prog)
-            
-            # Stop condition logic is implicit via 'elapsed < total_duration'
-            # But strictly speaking we stop when we pass the target
-            
-        status_text.text("✅ TOME TERMINÉ ! (04h00 Atteinte)")
-        progress_bar.progress(1.0)
-        st.success("Génération terminée avec succès. Le Tome est complet.")
-        st.session_state.current_chapter.append("\n\n**--- FIN DU TOME 1 ---**")
-        
-        # EXPORT SCRIPT
-        import os
-        os.makedirs("story", exist_ok=True)
-        filename = f"story/Tome_1_{datetime.now().strftime('%Y%m%d_%H%M')}.md"
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"# {SEED['scenario_name']} - TOME 1\n\n")
-            f.write(f"**Date Génération:** {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
-            f.write(f"**Casting:** {', '.join(st.session_state.characters.keys())}\n\n")
-            f.write("---\n\n")
-            f.write("\n".join(st.session_state.current_chapter))
-            
-        st.toast(f"💾 Script sauvegardé : {filename}")
-        st.balloons()
         st.rerun()

@@ -161,61 +161,120 @@ def render_dashboard(characters, world_time, map_layout, map_colors, story_text,
             <div class="panel-header"><span>AGENTS ACTIFS</span> <span>{len(characters)}</span></div>"""
         
         for name, v in characters.items():
-            active_class = "active" if v.get('pos') != v.get('dest', v['pos']) else "" # Active if moving
+            active_class = "active" if v.get('pos') != v.get('dest', v['pos']) else "" 
             
-            # Simplified Icons
+            # Icons
             role_icon = "👤"
+            if "Prof" in v['role']: role_icon = "🎓"
+            if "Fantôme" in v['role']: role_icon = "👻"
+            if "Chat" in v['role'] or "Chien" in v['role']: role_icon = "🐾"
             
-            # Simple Stats line
-            stats_html = f"""<div style="display:flex; gap:10px; margin-top:5px; font-size:0.75rem; color:#6b7280;">
-                <span>⚡ {v.get('energy', 0)}%</span>
-                <span>💧 {v.get('mana', 0)} MP</span>
-            </div>"""
+            # Stats Ratios
+            lvl = v.get('level', 1)
+            xp = v.get('xp', 0)
+            
+            # XP Bar width (Scaled by Level: Lv1=100, Lv2=200...)
+            xp_needed = lvl * 100
+            xp_pct = min(100, int((xp / xp_needed) * 100)) 
+            
+            # Stats (M: Magie, S: Social, P: Physique, K: Savoir)
+            stats = v.get('stats', {})
+            s_m = stats.get('MAGIE', 0)
+            s_s = stats.get('SOCIAL', 0)
+            s_p = stats.get('PHYSIQUE', 0)
+            s_k = stats.get('SAVOIR', 0)
+            
+            stats_html = f"""
+            <div style="margin-top:5px; font-size:0.7rem; color:#8c90a0; display:flex; justify-content:space-between;">
+                <span>✨{s_m}</span> <span>💬{s_s}</span> <span>💪{s_p}</span> <span>📚{s_k}</span>
+            </div>
+            <div style="margin-top:5px; background:#374151; height:4px; border-radius:2px; width:100%;">
+                <div style="background:#10b981; height:100%; border-radius:2px; width:{xp_pct}%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:2px; font-size:0.65rem; opacity:0.7;">
+                <span>LVL {lvl}</span> <span>{xp} XP</span>
+            </div>
+            """
             
             left_html += f"""<div class="stat-card {active_class}">
                 <div class="stat-name">{role_icon} {name} <span style="float:right; font-weight:normal; opacity:0.6; font-size:0.8rem;">{v['role']}</span></div>
                 {stats_html}
-                <div style="font-size:0.75rem; color:#9ca3af; margin-top:2px;">📍 {v['pos']}</div>
+                <div style="font-size:0.7rem; color:#6b7280; margin-top:2px;">📍 {v['pos']}</div>
             </div>"""
             
         left_html += "</div>"
         st.markdown(left_html, unsafe_allow_html=True)
 
-    # CENTER MAP
+    # CENTER PANEL (TABS)
     with col_center:
-        center_html = '<div class="panel" style="height: 80vh; padding:0; background:#111; display:flex; align-items:center; justify-content:center;">'
+        tab_map, tab_rel = st.tabs(["🗺️ CARTE", "❤️ RELATIONS"])
         
-        cells_html = ""
-        for y in range(grid_size):
-            for x in range(grid_size):
-                char = map_layout[y][x]
-                col = map_colors.get(char, "#111")
-                
-                markers = ""
-                # 1. Villagers
-                for v_name, v_data in characters.items():
-                    if v_data['pos'] == [x, y]:
-                         # Professional Dot
-                         color = "#fff" 
-                         if "Prof" in v_data['role']: color = "#eab308" # Gold
-                         if "Étudiant" in v_data['role']: color = "#3b82f6" # Blue
-                         markers += f'<div class="map-marker" style="background:{color};" title="{v_name}"></div>'
-                
-                # 2. Objects
-                if map_objects:
-                    for obj in map_objects:
-                        if obj['pos'] == [x, y]:
-                            markers += f'<div style="position:absolute; bottom:0; right:0; width:6px; height:6px; background:#10b981; border-radius:50%;"></div>'
+        with tab_map:
+            center_html = '<div class="panel" style="height: 80vh; padding:0; background:#111; display:flex; align-items:center; justify-content:center;">'
+            
+            cells_html = ""
+            for y in range(grid_size):
+                for x in range(grid_size):
+                    char = map_layout[y][x]
+                    col = map_colors.get(char, "#111")
+                    
+                    markers = ""
+                    # 1. Villagers
+                    for v_name, v_data in characters.items():
+                        if v_data['pos'] == [x, y]:
+                             # Professional Dot
+                             color = "#fff" 
+                             if "Prof" in v_data['role']: color = "#eab308" # Gold
+                             if "Étudiant" in v_data['role']: color = "#3b82f6" # Blue
+                             markers += f'<div class="map-marker" style="background:{color};" title="{v_name}"></div>'
+                    
+                    # 2. Objects
+                    if map_objects:
+                        for obj in map_objects:
+                            if obj['pos'] == [x, y]:
+                                markers += f'<div style="position:absolute; bottom:0; right:0; width:6px; height:6px; background:#10b981; border-radius:50%;"></div>'
 
-                cells_html += f'<div class="map-cell" style="background:{col}; position:relative; width:100%; height:100%; border:0.5px solid rgba(255,255,255,0.03);">{markers}</div>'
-                
-        # GRID
-        center_html += f"""<div style="display: grid; grid-template-columns: repeat({grid_size}, 1fr); grid-template-rows: repeat({grid_size}, 1fr); width: 100%; aspect-ratio: 1/1; max-height: 100%;">
-{cells_html}
-</div>"""
-        
-        center_html += "</div>"
-        st.markdown(center_html, unsafe_allow_html=True)
+                    cells_html += f'<div class="map-cell" style="background:{col}; position:relative; width:100%; height:100%; border:0.5px solid rgba(255,255,255,0.03);">{markers}</div>'
+                    
+            # GRID
+            center_html += f"""<div style="display: grid; grid-template-columns: repeat({grid_size}, 1fr); grid-template-rows: repeat({grid_size}, 1fr); width: 100%; aspect-ratio: 1/1; max-height: 100%;">
+    {cells_html}
+    </div>"""
+            center_html += "</div>"
+            st.markdown(center_html, unsafe_allow_html=True)
+            
+        with tab_rel:
+            # Heatmap Matrix using CSS Grid
+            names = list(characters.keys())
+            count = len(names)
+            
+            matrix_html = f'<div class="panel" style="height: 80vh; overflow:auto;">'
+            matrix_html += f'<div style="display:grid; grid-template-columns: 80px repeat({count}, 1fr); gap:2px; font-size:0.7rem;">'
+            
+            # Header Row
+            matrix_html += "<div></div>" # Corner
+            for n in names:
+                matrix_html += f'<div style="transform: rotate(-45deg); height:50px; display:flex; align-items:flex-end;">{n[:6]}</div>'
+            
+            # Rows
+            for source in names:
+                matrix_html += f'<div style="font-weight:bold; text-align:right; padding-right:5px;">{source[:8]}</div>'
+                for target in names:
+                    if source == target:
+                        matrix_html += '<div style="background:#333;"></div>'
+                    else:
+                        rel_val = characters[source].get('rel', {}).get(target, 0)
+                        # Color Scale
+                        bg = "#444"
+                        if rel_val > 50: bg = "#064e3b" # Dark Green
+                        elif rel_val > 10: bg = "#065f46"
+                        elif rel_val < -50: bg = "#7f1d1d" # Red
+                        elif rel_val < -10: bg = "#991b1b"
+                        
+                        matrix_html += f'<div style="background:{bg}; color:#fff; display:flex; align-items:center; justify-content:center;" title="{source}->{target}: {rel_val}">{rel_val}</div>'
+                        
+            matrix_html += "</div></div>"
+            st.markdown(matrix_html, unsafe_allow_html=True)
 
     # RIGHT PANEL
     with col_right:
