@@ -1,6 +1,5 @@
-import concurrent.futures
-from game.entities import characters, buildings
-from game.systems import relations, weather, economy, storybook
+from game.entities import characters
+from game.systems import relations, weather
 from core import storage
 
 class SimulationEngine:
@@ -90,6 +89,13 @@ class SimulationEngine:
             return []
 
         # PROCESSING (Tiered Logic reused but filtered)
+        import concurrent.futures
+        
+        # Filter Batches for only target_agents
+        characters_snapshot = state.characters
+        weather_snapshot = state.weather
+        llm_instance = state.llm
+        
         # Create ad-hoc batches for just these agents
         batches = []
         

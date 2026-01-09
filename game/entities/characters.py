@@ -1,7 +1,6 @@
 from game.entities import rpg as rpg_system
 from game.systems import relations
 import json
-from core import storage
 
 def get_agent_prompt_data(name, v, characters_state, world_time, seed, terrain_name, context):
     # Infos perso
