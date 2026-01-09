@@ -66,7 +66,11 @@ def batch_agent_turn(llm, agent_names, characters_state, world_time, weather, se
     {agents_block}
     
     OBJECTIF COMMUN: Progresser, réussir ses objets, interagir.
-    CONSIGNE: **1 TOUR = 1 HEURE.**
+    OBJECTIF COMMUN: Progresser, réussir ses objets, interagir.
+    
+    TEMPS & DURÉE:
+    - Tu dois estimer la DURÉE de ton action en MINUTES.
+    - Sois réaliste : "Toilettes" = 5-10 min, "Discuter" = 10-30 min, "Dormir" = 480 min, "Etudier" = 60-120 min.
     
     MECANIQUE RPG:
     - Chaque action "difficile" (Etudier un sort complexe, convaincre, escalader) demandera un jet de dés.
@@ -86,6 +90,7 @@ def batch_agent_turn(llm, agent_names, characters_state, world_time, weather, se
         "NomAgent1": {{
             "pensee": "Stratégie...",
             "action": "ACTION",
+            "duration": 15, 
             "target": "NOM_CIBLE (Optionnel)",
             "target_skill": "NOM_COMPETENCE_UTILISEE", 
             "dest": [x, y],
@@ -98,39 +103,68 @@ def batch_agent_turn(llm, agent_names, characters_state, world_time, weather, se
     try:
         res = llm.invoke(prompt)
         
-        # Nettoyage JSON
+        # 1. Extraction JSON Robust (Brace Counting)
         start = res.find('{')
-        end = res.rfind('}')
-        if start != -1 and end != -1:
-            json_str = res[start:end+1]
-            data = json.loads(json_str)
+        data = None
+        
+        if start != -1:
+            brace_count = 0
+            json_end = -1
+            for i, char in enumerate(res[start:], start=start):
+                if char == '{': brace_count += 1
+                elif char == '}': brace_count -= 1
+                if brace_count == 0:
+                    json_end = i
+                    break
             
-            final_results = {}
-            for name in agent_names:
-                d = data.get(name)
-                # Fallback Defaults
-                defaults = {
-                    "action": "RIEN",
-                    "pensee": "Attend...",
-                    "dest": characters_state[name]['pos'],
-                    "reaction": None
-                }
-                
-                if not d:
-                    final_results[name] = defaults
-                else:
-                    # Validate Dest
-                    dst = d.get('dest')
-                    if not isinstance(dst, list) or len(dst) != 2:
-                        d['dest'] = characters_state[name]['pos']
-                    final_results[name] = {**defaults, **d}
-            
-            return final_results
+            if json_end != -1:
+                json_str = res[start:json_end+1]
+                try:
+                    data = json.loads(json_str, strict=False)
+                except json.JSONDecodeError:
+                    # Fallback Regex Clean
+                    import re
+                    clean_str = re.sub(r'[\x00-\x1f]', '', json_str)
+                    data = json.loads(clean_str, strict=False)
+        
+        if data is None:
+             raise ValueError("JSON introuvable ou invalide dans la réponse IA")
 
-        else:
-             raise ValueError("JSON invalide")
+        # 2. Processing
+        final_results = {}
+        for name in agent_names:
+            d = data.get(name)
+            
+            # Defaults
+            defaults = {
+                "action": "RIEN",
+                "pensee": "Attend...",
+                "dest": characters_state[name]['pos'],
+                "reaction": None,
+                "duration": 15
+            }
+            
+            if not d:
+                final_results[name] = defaults
+            else:
+                # Validate Dest (Force INT)
+                dst = d.get('dest')
+                valid_dest = False
+                if isinstance(dst, list) and len(dst) == 2:
+                    try:
+                        d['dest'] = [int(dst[0]), int(dst[1])]
+                        valid_dest = True
+                    except (ValueError, TypeError):
+                        pass
+                
+                if not valid_dest:
+                    d['dest'] = characters_state[name]['pos']
+                    
+                final_results[name] = {**defaults, **d}
+        
+        return final_results
 
     except Exception as e:
         print(f"Erreur Batch IA: {e}")
-        # Return fallback for all
-        return {name: {"action": "RIEN", "pensee": f"Erreur {e}", "dest": characters_state[name]['pos'], "reaction": None} for name in agent_names}
+        # Fallback
+        return {name: {"action": "RIEN", "pensee": f"Erreur {e}", "dest": characters_state[name]['pos'], "reaction": None, "duration": 5} for name in agent_names}

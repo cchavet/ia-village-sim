@@ -124,7 +124,7 @@ class OllamaWrapper:
 def get_llm():
     # User requested local: Gemma 3 (4B)
     # Correct Ollama Tag: gemma3:4b
-    MODEL_NAME = "gemma3:4b"
+    MODEL_NAME = "gemma3:1b"
     
     # LIFECYCLE CHECK And PULL
     # Only check once per session to avoid sluggishness on reruns, 

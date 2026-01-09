@@ -77,10 +77,10 @@ if 'characters' not in st.session_state:
 engine = game_engine.SimulationEngine(SEED)
 
 # --- LOGIC ---
-def run_step():
+def run_step(target_agents=None):
     # 1. Simulation
     full_text = "\n".join(st.session_state.current_chapter)
-    step_logs = engine.run_single_turn(current_chapter_text=full_text)
+    step_logs = engine.run_agents_turn(current_chapter_text=full_text, target_agents=target_agents)
     
     # 2. Narration
     narrator_gen = storybook.narrate_continuous(
@@ -159,12 +159,56 @@ ui.render_dashboard(
     map_objects=st.session_state.map_objects
 )
 
-# --- CONTROLS ---
-st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-c1, c2, c3 = st.columns([1,1,1])
+# --- CONTROLS & LIVE LOOP ---
 
-with c2:
-    if st.button("▶ AVANCER (1 TOUR)"):
-        with st.spinner("Simulation & Écriture..."):
-            run_step()
+if 'running' not in st.session_state:
+    st.session_state.running = False
+
+st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+col_ctrl, col_info = st.columns([1,3])
+
+with col_ctrl:
+    if st.button("⏯ PAUSE / REPRENDRE", type="primary"):
+        st.session_state.running = not st.session_state.running
         st.rerun()
+
+# SPEED CONTROLS
+st.sidebar.markdown("---")
+st.sidebar.write("⚡ **Vitesse Simulation**")
+speed_min = st.sidebar.slider("Minutes par Tick", 1, 60, 5)
+turbo_mode = st.sidebar.checkbox("Mode Turbo (No Sleep)", value=True)
+
+with col_info:
+    status = "🟢 EN COURS" if st.session_state.running else "🔴 PAUSE"
+    st.write(f"**Etat : {status}** ({speed_min} min de jeu / tick)")
+
+# LIVE LOOP
+if st.session_state.running:
+    import time
+    
+# LIVE LOOP
+if st.session_state.running:
+    import time
+    
+    # Tick Engine
+    if turbo_mode:
+        # ASYNC SPEEDRUN: Jump to next finished action
+        ready_agents = engine.jump_to_next_event()
+    else:
+        # PROPORTIONAL TIME: Tick by speed_min
+        ready_agents = engine.tick(minutes=speed_min)
+    
+    # Check if Agents need to play
+    if ready_agents:
+        with st.spinner(f"🧠 {len(ready_agents)} Agents décident..."):
+            run_step(target_agents=ready_agents) 
+        
+        # Log update is already in engine
+        st.session_state.logs.append(f"*[SYSTEM] {st.session_state.world_time//60}h{st.session_state.world_time%60:02d} : {len(ready_agents)} actions.*")
+        st.rerun() 
+    else:
+        if not turbo_mode:
+            time.sleep(0.5) 
+        
+        st.rerun()
+

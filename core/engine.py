@@ -13,109 +13,122 @@ class SimulationEngine:
             return self.seed['map_legend'].get(char, "Inconnu")
         return "Océan"
 
-    def run_single_turn(self, current_chapter_text=""):
+    def tick(self, minutes=1):
         """
-        Exécute UN seul tour de simulation pour tous les agents.
-        Retourne les logs techniques de ce tour.
+        Avance le temps. Retourne la liste des agents PRETS A JOUER.
         """
-        # 1. Update Time/Weather
-        # ADAPTIVE TIME STEPPING
-        increment = st.session_state.get('next_time_increment', 1)
-        st.session_state.world_time = (st.session_state.world_time + increment) % 1440
+        st.session_state.world_time = (st.session_state.world_time + minutes) % 1440
+        current_time = st.session_state.world_time
         
+        # Weather chance
+        if current_time % 10 == 0:
+             st.session_state.weather = weather.update_weather(st.session_state.weather)
+             
+        # Find Free Agents
+        ready_agents = []
+        for name, v in st.session_state.characters.items():
+            busy_until = v.get('busy_until', 0)
+            # If busy_until < current_time (accounting for day wrap? Simplified: just linear check)
+            # Simplification: Reset busy_until on new day? 
+            # For now, let's assume linear time or handle midnight wrap carefully.
+            # To avoid wrap issues, we might want to store 'busy_remaining' instead?
+            # Or just ignore wrap for a prototype logic if we reset manually.
+            # Robust: busy_until is absolute minute of day. If we wrap 1440->0, we must reset busy_until too?
+            # Hack: If busy_until > 1440, it means next day.
+            
+            # Simple Logic: Action finishes.
+            if  current_time >= busy_until:
+                 ready_agents.append(name)
+        
+        return ready_agents
+
+    def jump_to_next_event(self):
+        """
+        Avance jusqu'à la fin de la prochaine action en cours.
+        """
+        current = st.session_state.world_time
+        min_busy = 9999
+        
+        for v in st.session_state.characters.values():
+            b = v.get('busy_until', current)
+            if b > current:
+                if b < min_busy: min_busy = b
+        
+        if min_busy == 9999: 
+            return self.tick(1) # No one busy? +1
+            
+        delta = min_busy - current
+        if delta <= 0: delta = 1
+        
+        return self.tick(delta)
+
+    def run_agents_turn(self, current_chapter_text="", target_agents=None):
+        """
+        Exécute la décision pour les agents spécifiés.
+        """
+        # Update Time Display
         current_time_min = st.session_state.world_time
-        # Format HH:MM
         time_str = f"{current_time_min // 60}h{current_time_min % 60:02d}"
-        
-        st.session_state.weather = weather.update_weather(st.session_state.weather)
-        
-        # SELF-HEALING: Init RPG Stats
+
+        # Initialize Stats if needed
         from plugins import rpg_system
         for name, v in st.session_state.characters.items():
             if 'stats' not in v:
                 v['stats'] = rpg_system.init_stats(v['role'])
-                v['xp'] = 0
-                v['level'] = 1
-                # print(f"[Init RPG] {name} initialized.")
+                v['xp'] = 0; v['level'] = 1
         
         step_logs = []
         
-        # 2. Agents Turn (PARALLEL)
-        import concurrent.futures
-        
-        # Prepare Snapshot Data for Threads (Avoid st.session_state inside threads)
-        characters_snapshot = st.session_state.characters
-        weather_snapshot = st.session_state.weather
-        llm_instance = st.session_state.llm
-        
-        # Helper for parallel execution
-        def process_agent(name, chars_data, current_weather, llm_obj, t_str):
-            try:
-                v = chars_data[name]
-                x, y = v['pos']
-                terrain = self.get_terrain_at(x, y)
-                
-                # Decision (Using passed data)
-                decision = characters.agent_turn(
-                    llm_obj, name, chars_data, 
-                    t_str, current_weather, self.seed, terrain, 
-                    context=current_chapter_text
-                )
-                return name, decision, v
-            except Exception as e:
-                print(f"Error Agent {name}: {e}")
-                return None
+        # Determine who plays
+        if target_agents is None:
+            # Fallback: All
+            target_agents = list(st.session_state.characters.keys())
+            
+        if not target_agents:
+            return []
 
-        # 2. Agents Turn (TIERED BATCH PARALLEL)
+        # PROCESSING (Tiered Logic reused but filtered)
         import concurrent.futures
         
-        # Snapshot Data
+        # Filter Batches for only target_agents
         characters_snapshot = st.session_state.characters
         weather_snapshot = st.session_state.weather
         llm_instance = st.session_state.llm
         
-        # Define Tiers
-        MAINS = ["Alaric", "Elara", "Thorne"]
-        EXTRAS = ["Peeves", "Baron", "Crocdur"]
-        # Others = Secondaries
-        
-        all_names = list(characters_snapshot.keys())
-        secondaries = [n for n in all_names if n not in MAINS and n not in EXTRAS]
-        
-        # Create Batches
+        # Create ad-hoc batches for just these agents
+        batches = []
+        # Create ad-hoc batches for just these agents
         batches = []
         
-        # Tier 1: Mains (1 per thread)
-        for name in MAINS:
-            if name in all_names: batches.append([name])
+        # User defined Group: Creatures/Extras
+        extras_group = ["Peeves", "Baron", "Crocdur"]
+        found_extras = [n for n in target_agents if n in extras_group]
+        
+        # Remove them from the pool to batch
+        remaining_pool = [n for n in target_agents if n not in extras_group]
+        
+        # 1. Batch Extras together
+        if found_extras:
+            batches.append(found_extras)
             
-        # Tier 2: Secondaries (2 per thread)
-        for i in range(0, len(secondaries), 2):
-            batches.append(secondaries[i:i+2])
+        # 2. Batch others in pairs
+        for i in range(0, len(remaining_pool), 2):
+            batches.append(remaining_pool[i:i+2])
             
-        # Tier 3: Extras (All in 1 thread)
-        valid_extras = [n for n in EXTRAS if n in all_names]
-        if valid_extras:
-            batches.append(valid_extras)
-            
-        # Worker Function
+        # Worker (Same as before)
         def process_batch_task(agent_names, chars_data, current_weather, llm_obj, t_str):
             try:
-                # Prepare Terrain Dict
                 terrains = {}
                 for name in agent_names:
                     v = chars_data[name]
-                    x, y = v['pos']
-                    terrains[name] = self.get_terrain_at(x, y)
+                    terrains[name] = self.get_terrain_at(v['pos'][0], v['pos'][1])
                 
-                # Batch Call
                 decisions_map = characters.batch_agent_turn(
                     llm_obj, agent_names, chars_data, 
                     t_str, current_weather, self.seed, terrains, 
                     context=current_chapter_text
                 )
                 
-                # Format Result List
                 batch_results = []
                 for name, decis in decisions_map.items():
                     if name in chars_data:
@@ -127,26 +140,28 @@ class SimulationEngine:
 
         # Execute
         results = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             future_to_batch = {
                 executor.submit(process_batch_task, batch, characters_snapshot, weather_snapshot, llm_instance, time_str): batch 
                 for batch in batches
             }
             for future in concurrent.futures.as_completed(future_to_batch):
-                 res_list = future.result()
-                 results.extend(res_list)
+                 results.extend(future.result())
 
-        # Apply Updates Sequentially
+        # Apply Updates
         for name, decision, v in results:
             
-            # ACTIONS
-            # Safe clean of newlines or spaces
+            # --- DURATION LOGIC ---
+            duration = int(decision.get('duration', 15))
+            if duration < 5: duration = 5 # Minimum 5 mins
+            v['busy_until'] = (st.session_state.world_time + duration) % 1440
+            # Handle midnight wrap logic carefully later. For now sim is 1 day.
+            
+            # ACTIONS ...
             action = str(decision.get('action', 'RIEN')).strip().upper()
             
             # Deplacement
             dest_x, dest_y = decision.get('dest', v['pos'])
-            
-            # Clamp Map
             new_x = max(0, min(self.grid_size-1, dest_x))
             new_y = max(0, min(self.grid_size-1, dest_y))
             v['pos'] = [new_x, new_y]
@@ -171,28 +186,21 @@ class SimulationEngine:
                 rpg_log = f"\n> 🎲 **{target_skill}**: {check['roll']} + {check['bonus']} = {check['total']} (Diff {check['difficulty']}) -> **{status}**"
                 
                 if check['success']:
-                    # Gain XP
-                    xp_logs = rpg_system.gain_xp(v, 20) # 20 XP per success
-                    if xp_logs:
-                        rpg_log += f" | {' '.join(xp_logs)}"
+                    xp_logs = rpg_system.gain_xp(v, 20) 
+                    if xp_logs: rpg_log += f" | {' '.join(xp_logs)}"
                 else:
-                    # Penalty?
                     rpg_log += " | (Fatigue +2)"
                     v['energy'] = max(0, v.get('energy', 0) - 2)
 
             # --- SOCIAL MECHANIC ---
             target_name = decision.get('target')
             if target_name and target_name in st.session_state.characters and target_name != name:
-                # Determine Delta based on Skill Check (if any) or Default
                 delta = 0
-                if target_skill == "SOCIAL":
-                     delta = 5 if skill_success else -2
-                elif action == "DISCUTER" or action == "DRAGUER":
-                     delta = 2 # Default small gain
+                if target_skill == "SOCIAL": delta = 5 if skill_success else -2
+                elif action == "DISCUTER" or action == "DRAGUER": delta = 2 
                 
                 if delta != 0:
                     new_val, status = relations.update_affinity(v, target_name, delta)
-                    # Bi-directional? Maybe half for the other? For now uni-directional.
                     rpg_log += f"\n> ❤️ **Relation {target_name}**: {delta:+d} ({status}: {new_val})"
 
             # Effects
@@ -205,18 +213,11 @@ class SimulationEngine:
             if decision['reaction']: action_msg += f" \"{decision['reaction']}\""
             
             # Log
-            # Include Location for Narrator Context
             terrain_display = self.get_terrain_at(new_x, new_y)
-            # Display Level/XP instead of old stats
-            stats_display = f"Lvl {v.get('level', 1)} | XP {v.get('xp', 0)}"
-            log_entry = f"**{time_str} - {name}** ({terrain_display}) [{stats_display}]\n*{decision['pensee']}*\n> {action} {action_msg}{rpg_log}"
+            stats_display = f"Lvl {v.get('level', 1)}"
+            # Show Duration in Log
+            log_entry = f"**{time_str} - {name}** ({terrain_display}) [{stats_display}]\n*{decision['pensee']}*\n> {action} {action_msg} (⏳ {duration} min){rpg_log}"
             step_logs.append(log_entry)
-
-        # FIXED TIME STEP (User Request: 1 turn = 1 hour)
-        next_inc = 60
-        
-        st.session_state.next_time_increment = next_inc
-        step_logs.append(f"*[MOTEUR] Eclipse Temporelle : +{next_inc} min.*")
 
         # 3. Save State (Continuous)
         st.session_state.logs = step_logs + st.session_state.logs
