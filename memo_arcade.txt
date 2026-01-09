@@ -1,0 +1,52 @@
+# Arcade 3.x Research Memo
+
+## 1. GUI System (arcade.gui)
+The UI system is managed by `UIManager`, which handles events and rendering for widgets.
+
+### Key Components
+- **UIManager**: The central manager.
+  - `manager.enable()` / `manager.disable()`: Controls event listening.
+  - `manager.add(widget)`: Adds widgets to the screen.
+  - `manager.draw()`: Renders the UI (usually called in `on_draw`).
+
+- **Layouts**:
+  - **`UIAnchorLayout`**: Positions children relative to the container edges (top, bottom, center, etc.).
+    ```python
+    anchor = arcade.gui.UIAnchorLayout()
+    anchor.add(child_widget, anchor_x="right", anchor_y="top")
+    ```
+  - **`UIBoxLayout`**: Stacks widgets vertically or horizontally.
+    ```python
+    v_box = arcade.gui.UIBoxLayout(space_between=10)
+    v_box.add(button)
+    ```
+
+## 2. Rendering & Optimization
+For rendering large numbers of objects, `SpriteList` is the primary tool.
+
+- **Spatial Hashing**:
+  - `arcade.SpriteList(use_spatial_hash=True)`: Essential for static or semi-static objects (like walls/terrain). It partitions space to drastically speed up collision detection and spatial queries.
+- **Lazy Loading**:
+  - `lazy=True`: Delays GPU buffer creation until the first draw, useful for faster startup if many lists are created but not immediately shown.
+
+## 3. Profiling & Debugging
+- **PerfGraph**: A built-in widget to visualize performance metrics (FPS, update time, draw time).
+  ```python
+  arcade.enable_timings()
+  perf_graph = arcade.PerfGraph(width=200, height=40, graph_data="FPS")
+  # In on_draw:
+  perf_graph.draw()
+  ```
+
+## 4. Camera System (Camera2D)
+`Camera` is deprecated/legacy. The modern standard is `Camera2D`.
+
+- **Usage**:
+  - `camera.use()`: Activates the camera transform for subsequent draw calls.
+  - `camera.map_screen_to_world((x, y))`: Converts mouse coordinates to game world coordinates.
+  - `camera.position`: (x, y) tuple to scroll the view.
+  - `camera.zoom`: Scalar to zoom in/out.
+
+## 5. Text Rendering
+- **Avoid `arcade.draw_text` in loops**: It is very slow because it recreates textures every frame.
+- **Use `arcade.Text`**: Create the text object once in `setup()`, update its `.value` or `.text` attribute if needed, and call `.draw()` in `on_draw()`.

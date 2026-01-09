@@ -25,7 +25,7 @@ def prepare_prompt_ai(events):
         Format : "Actions: ..., Ambiance: ..."
         """
         response = client.models.generate_content(
-            model='gemma3:1b',
+            model=None,
             contents=metaprompt
         )
         return response.text.strip()
@@ -72,7 +72,7 @@ def extract_facts_ai(logs_text):
         FORMAT: "- [Nom] a trouvé..."
         """
         response = client.models.generate_content(
-            model='gemma3:1b',
+            model=None,
             contents=prompt
         )
         output = response.text.strip()
@@ -150,7 +150,7 @@ def narrate_continuous(current_chapter_text, turn_logs, world_seed, world_time_m
     
     try:
         response_stream = client.models.generate_content_stream(
-            model='gemma3:1b',
+            model=None,
             contents=prompt
         )
         for chunk in response_stream:
@@ -177,7 +177,7 @@ def analyze_chapter(full_chapter_text, villagers_data):
     
     try:
         response = client.models.generate_content(
-            model='gemma3:1b',
+            model=None,
             contents=prompt
         )
         return [l.strip() for l in response.text.split('\n') if l.strip().startswith('-')]
@@ -204,7 +204,7 @@ def scan_for_objects(text):
     """
     try:
         response = client.models.generate_content(
-            model='gemma3:1b',
+            model=None,
             contents=prompt
         )
         # Nettoyage basique

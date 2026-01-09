@@ -1,8 +1,7 @@
-from core.llm import get_llm
 from game.entities import rpg as rpg_system
 from game.systems import relations
 import json
-import streamlit as st
+from core import storage
 
 def get_agent_prompt_data(name, v, characters_state, world_time, seed, terrain_name, context):
     # Infos perso
@@ -66,7 +65,6 @@ def batch_agent_turn(llm, agent_names, characters_state, world_time, weather, se
     VOICI LES PERSONNAGES (Groupe):
     {agents_block}
     
-    OBJECTIF COMMUN: Progresser, réussir ses objets, interagir.
     OBJECTIF COMMUN: Progresser, réussir ses objets, interagir.
     
     TEMPS & DURÉE:

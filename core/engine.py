@@ -90,15 +90,6 @@ class SimulationEngine:
             return []
 
         # PROCESSING (Tiered Logic reused but filtered)
-        import concurrent.futures
-        
-        # Filter Batches for only target_agents
-        characters_snapshot = state.characters
-        weather_snapshot = state.weather
-        llm_instance = state.llm
-        
-        # Create ad-hoc batches for just these agents
-        batches = []
         # Create ad-hoc batches for just these agents
         batches = []
         
