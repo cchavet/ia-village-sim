@@ -1,208 +1,279 @@
 {
-  "scenario_name": "Eros Club - Soirée Découverte",
-  "description": "Un club libertin moderne et chic en périphérie. Ambiance feutrée, lumières tamisées, musique Deep House.",
+  "scenario_name": "Mystères de l'Académie",
+  "description": "Un village sorcier caché et son Académie de Magie. Ruelles tortueuses, boutiques enchantées et une Forêt Interdite menaçante.",
   "grid_size": 32,
   "map_legend": {
-    ".": "Corridor/Sol (Gris)",
-    "#": "Mur (Noir)",
-    "D": "Piste de Danse (Violet)",
-    "B": "Bar (Cyan)",
-    "R": "Restaurant (Beige)",
-    "L": "Lounge/Canapés (Rouge S)",
-    "S": "Fumoir (Gris C)",
-    "X": "Coin Câlin (Rose)",
-    "P": "Piscine (Bleu)",
-    "O": "Transats/Extérieur (Vert)",
-    "+": "Douches (Blanc)",
-    "E": "Entrée/Vestiaire (Jaune)"
+    ".": "Pavés/Rue (Gris)",
+    "#": "Mur/Pierre (Noir)",
+    "A": "Auberge du Chaudron (Marron)",
+    "B": "Baguettes d'Olliv (Or)",
+    "P": "Apothicaire (Vert)",
+    "L": "Bibliothèque (Bleu)",
+    "D": "Salle de Duel (Rouge)",
+    "G": "Grande Salle (Violet)",
+    "F": "Forêt Interdite (Vert Foncé)",
+    "E": "Entrée Village (Jaune)"
   },
   "map_colors": {
-    ".": "#2c2c2c",
-    "#": "#000000",
-    "D": "#8a2be2",
-    "B": "#00ced1",
-    "R": "#d2b48c",
-    "L": "#8b0000",
-    "S": "#708090",
-    "X": "#ff1493",
-    "P": "#00bfff",
-    "O": "#228b22",
-    "+": "#f0f8ff",
+    ".": "#3a3a3a",
+    "#": "#1a1a1a",
+    "A": "#8b4513",
+    "B": "#daa520",
+    "P": "#2e8b57",
+    "L": "#4682b4",
+    "D": "#8b0000",
+    "G": "#9370db",
+    "F": "#006400",
     "E": "#ffd700"
   },
   "map_layout": [
     "################################",
-    "#EEEE#SSSS#LLLLLLLL#XXXXXXXXXX+#",
-    "#EEEE#SSSS#LLLLLLLL#XXXXXXXXXX+#",
-    "#....#....#LLLLLLLL#XXXXXXXXXX+#",
-    "#.##......#........#XX..XX..XX #",
+    "#EEEE#AAAA#BBBBBBBB#PPPPPPPPPP+#",
+    "#EEEE#AAAA#........#..........+#",
+    "#....#....#........#..........+#",
+    "#.##......#........#.......... #",
     "#.##...........................#",
-    "#..............................#",
-    "#...BBBBBBBB...................#",
-    "#...BBBBBBBB...................#",
-    "#...BB....BB.......DDDDDDDD....#",
-    "#..................DDDDDDDD....#",
-    "#..................DDDDDDDD....#",
-    "#..................DDDDDDDD....#",
-    "#.......RRRRRRR....DDDDDDDD....#",
-    "#.......RRRRRRR................#",
-    "#.......RRRRRRR................#",
-    "#.......RRRRRRR................#",
-    "#.......RRRRRRR................#",
+    "#.......GGGGGGGGGGGG...........#",
+    "#.......GGGGGGGGGGGG...........#",
+    "#.......GGGGGGGGGGGG...........#",
+    "#.......GGGGGGGGGGGG...........#",
     "#..............................#",
     "#..............................#",
-    "####################...#########",
-    "#OOOOOOOOOOOOOOOOOO#...#OOOOOOO#",
-    "#OOOOOOOOOOOOOOOOOO#...#OOOOOOO#",
-    "#OOOOOPPPPPPPPPPOOO#...#OOOOOOO#",
-    "#OOOOOPPPPPPPPPPOOO.....OOOOOOO#",
-    "#OOOOOPPPPPPPPPPOOO.....OOOOOOO#",
-    "#OOOOOPPPPPPPPPPOOO.....OOOOOOO#",
-    "#OOOOOOOOOOOOOOOOOO.....OOOOOOO#",
-    "#OOOOOOOOOOOOOOOOOO.....OOOOOOO#",
-    "#OOOOOOOOOOOOOOOO..............#",
+    "#..............................#",
+    "#..............................#",
+    "#.......LLLLLLLLL..............#",
+    "#.......LLLLLLLLL..............#",
+    "#.......LLLLLLLLL..............#",
+    "#.......LLLLLLLLL..............#",
+    "#..............................#",
+    "#......................DDDDD...#",
+    "#......................DDDDD...#",
+    "#FFFFFFFFFFFFFFFF......DDDDD...#",
+    "#FFFFFFFFFFFFFFFF......DDDDD...#",
+    "#FFFFFFFFFFFFFFFF..............#",
+    "#FFFFFFFFFFFFFFFF..............#",
+    "#FFFFFFFFFFFFFFFF..............#",
+    "#FFFFFFFFFFFFFFFF..............#",
+    "#FFFFFFFFFFFFFFFF..............#",
+    "#FFFFFFFFFFFFFFFF..............#",
+    "#FFFFFFFFFFFFFFFF..............#",
     "################################",
     "################################"
   ],
   "characters": {
-    "Clem": {
-      "role": "Client",
-      "age": 35,
-      "description": "35 ans, brun, 1.75m, 62kg. En couple avec Mary depuis 8 ans. Veut raviver la flamme. Nerveux mais curieux.",
+    "Alaric": {
+      "role": "Étudiant",
+      "age": 17,
+      "description": "17 ans, cheveux en bataille, cicatrice. Courageux mais impulsif. Cherche à prouver sa valeur.",
       "pos": [
-        10,
-        15
-      ],
-      "energy": 80,
-      "excitation": 0,
-      "alcohol": 0.0,
-      "cigarettes": 0,
-      "inventory": [
-        "Carte Membre Club",
-        "Préservatifs"
-      ]
-    },
-    "Mary": {
-      "role": "Cliente",
-      "age": 32,
-      "description": "32 ans, brune, 1.56m, 47kg. Sensuelle, un peu timide au début mais aime être regardée.",
-      "pos": [
-        11,
-        15
-      ],
-      "energy": 80,
-      "excitation": 0,
-      "alcohol": 0.0,
-      "cigarettes": 0,
-      "inventory": [
-        "Robe de soirée",
-        "Rouge à lèvres"
-      ]
-    },
-    "Chloe": {
-      "role": "Hôtesse",
-      "age": 24,
-      "description": "Accueil, vestiaire. Souriante et professionnelle. Gardienne des téléphones.",
-      "pos": [
-        2,
-        2
+        15,
+        10
       ],
       "energy": 90,
       "excitation": 0,
-      "alcohol": 0.0,
-      "cigarettes": 0,
+      "mana": 100,
       "inventory": [
-        "Caisse",
-        "Clés Vestiaire"
+        "Baguette en Houx",
+        "Carte du Maraudeur"
       ]
     },
-    "Lola": {
-      "role": "Barmaid",
-      "age": 28,
-      "description": "Sexy, efficace. Sert des cocktails forts.",
-      "pos": [
-        6,
-        9
-      ],
-      "energy": 90,
-      "excitation": 10,
-      "alcohol": 0.0,
-      "cigarettes": 0,
-      "inventory": [
-        "Shaker",
-        "Torchons"
-      ]
-    },
-    "Mike": {
-      "role": "Barman",
-      "age": 30,
-      "description": "Charismatique, jongle avec les bouteilles. Complice de Lola.",
-      "pos": [
-        7,
-        9
-      ],
-      "energy": 90,
-      "excitation": 5,
-      "alcohol": 0.0,
-      "cigarettes": 0,
-      "inventory": [
-        "Décapsuleur",
-        "Tequila"
-      ]
-    },
-    "Igor": {
-      "role": "Videur",
+    "Elara": {
+      "role": "Professeur",
       "age": 45,
-      "description": "Imposant, surveille l'entrée et la salle. Calme mais dissuasif.",
+      "description": "45 ans, stricte, robes émeraude. Enseigne la métamorphose. Cache un secret.",
       "pos": [
-        3,
-        2
+        16,
+        16
+      ],
+      "energy": 80,
+      "excitation": 0,
+      "mana": 150,
+      "inventory": [
+        "Baguette Ancienne",
+        "Montre à Gousset"
+      ]
+    },
+    "Thorne": {
+      "role": "Garde-Chasse",
+      "age": 60,
+      "description": "Géant hirsute, bourru mais coeur d'or. Vit près de la forêt.",
+      "pos": [
+        28,
+        5
       ],
       "energy": 95,
       "excitation": 0,
-      "alcohol": 0.0,
-      "cigarettes": 0,
+      "mana": 50,
       "inventory": [
-        "Oreillette",
-        "Lampe Torche"
+        "Parapluie Rose",
+        "Lanterne"
       ]
     },
-    "Marc": {
-      "role": "Client",
-      "age": 42,
-      "description": "Habitué. Regard prédateur mais poli. En couple avec Sophie.",
+    "Luna": {
+      "role": "Étudiante",
+      "age": 16,
+      "description": "Rêveuse, voit des créatures invisibles. Très douée en sortilèges.",
+      "pos": [
+        14,
+        10
+      ],
+      "energy": 85,
+      "excitation": 0,
+      "mana": 90,
+      "inventory": [
+        "Baguette en Cerisier",
+        "Spectrespecs"
+      ]
+    },
+    "Draco": {
+      "role": "Étudiant",
+      "age": 17,
+      "description": "Arrogant, riche, talentueux. Rival d'Alaric.",
+      "pos": [
+        15,
+        12
+      ],
+      "energy": 90,
+      "excitation": 0,
+      "mana": 95,
+      "inventory": [
+        "Baguette en Aubépine",
+        "Balai de Course"
+      ]
+    },
+    "Garrick": {
+      "role": "Vendeur de Baguettes",
+      "age": 70,
+      "description": "Yeux perçants, mémoire encyclopédique des baguettes.",
+      "pos": [
+        2,
+        6
+      ],
+      "energy": 60,
+      "excitation": 0,
+      "mana": 120,
+      "inventory": [
+        "Mètre Ruban",
+        "Plume de Phénix"
+      ]
+    },
+    "Mira": {
+      "role": "Apothicaire",
+      "age": 50,
+      "description": "Mains tachées d'encre et de potions. Vend des ingrédients rares.",
+      "pos": [
+        2,
+        12
+      ],
+      "energy": 70,
+      "excitation": 0,
+      "mana": 80,
+      "inventory": [
+        "Chaudron",
+        "Bave de Crapaud"
+      ]
+    },
+    "Filius": {
+      "role": "Bibliothécaire",
+      "age": 110,
+      "description": "Minuscule, perché sur des livres. Connaît tous les sortilèges.",
+      "pos": [
+        16,
+        6
+      ],
+      "energy": 50,
+      "excitation": 0,
+      "mana": 180,
+      "inventory": [
+        "Grimoire Interdit",
+        "Plume Enchantée"
+      ]
+    },
+    "Peeves": {
+      "role": "Esprit Frappeur",
+      "age": 500,
+      "description": "Fantôme chaotique, adore les farces. Flotte à travers les murs.",
       "pos": [
         15,
         15
       ],
-      "energy": 85,
-      "excitation": 15,
-      "alcohol": 0.2,
-      "cigarettes": 0,
+      "energy": 100,
+      "excitation": 0,
+      "mana": 200,
+      "inventory": [
+        "Bombabouse",
+        "Craie"
+      ]
+    },
+    "Baron": {
+      "role": "Fantôme",
+      "age": 900,
+      "description": "Sinistre, couvert de chaînes argentées. Effrayant.",
+      "pos": [
+        10,
+        10
+      ],
+      "energy": 100,
+      "excitation": 0,
+      "mana": 100,
       "inventory": []
     },
-    "Sophie": {
-      "role": "Cliente",
-      "age": 39,
-      "description": "Élégante, très ouverte. Cherche à initier les nouveaux.",
+    "Crocdur": {
+      "role": "Chien",
+      "age": 8,
+      "description": "Grand mâtin poltron. Bave beaucoup. Fidèle à Thorne.",
       "pos": [
-        16,
-        15
+        28,
+        6
+      ],
+      "energy": 80,
+      "excitation": 0,
+      "mana": 0,
+      "inventory": []
+    },
+    "Rosmerta": {
+      "role": "Tenancière",
+      "age": 40,
+      "description": "Accueillante, potins du village. Sert la meilleure Bierraubeurre.",
+      "pos": [
+        4,
+        5
       ],
       "energy": 85,
-      "excitation": 20,
-      "alcohol": 0.1,
-      "cigarettes": 0,
-      "inventory": []
+      "excitation": 0,
+      "mana": 20,
+      "inventory": [
+        "Chope",
+        "Torchon"
+      ]
+    },
+    "Rusard": {
+      "role": "Concierge",
+      "age": 60,
+      "description": "Aigri, déteste les élèves. Surveille les couloirs avec sa chatte.",
+      "pos": [
+        20,
+        20
+      ],
+      "energy": 70,
+      "excitation": 0,
+      "mana": 0,
+      "inventory": [
+        "Lanterne",
+        "Trousseau de Clés"
+      ]
     }
   },
   "loot_table": [
-    "Coupe de Champagne",
-    "Huile de Massage",
-    "Fouet",
-    "Menottes",
-    "Vibromasseur",
-    "Cigarette",
-    "Cocktail Signature"
+    "Baguette Magique",
+    "Potion de Soin",
+    "Parchemin Vierge",
+    "Plume d'Aigle",
+    "Bierraubeurre",
+    "Chocogrenouille",
+    "Dragées Surprises",
+    "Cape d'Invisibilité (Copie)",
+    "Carte de Sorcier Célèbre",
+    "Fiole de Souvenir"
   ]
 }

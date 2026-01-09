@@ -5,8 +5,8 @@
             "age": 35,
             "description": "35 ans, brun, 1.75m, 62kg. En couple avec Mary depuis 8 ans. Veut raviver la flamme. Nerveux mais curieux.",
             "pos": [
-                10,
-                15
+                11,
+                16
             ],
             "energy": 80,
             "excitation": 0,
@@ -22,7 +22,7 @@
             "age": 32,
             "description": "32 ans, brune, 1.56m, 47kg. Sensuelle, un peu timide au début mais aime être regardée.",
             "pos": [
-                11,
+                10,
                 15
             ],
             "energy": 80,
@@ -39,8 +39,8 @@
             "age": 24,
             "description": "Accueil, vestiaire. Souriante et professionnelle. Gardienne des téléphones.",
             "pos": [
-                2,
-                2
+                1,
+                1
             ],
             "energy": 90,
             "excitation": 0,
@@ -56,8 +56,8 @@
             "age": 28,
             "description": "Sexy, efficace. Sert des cocktails forts.",
             "pos": [
-                7,
-                8
+                6,
+                9
             ],
             "energy": 90,
             "excitation": 10,
@@ -73,8 +73,8 @@
             "age": 30,
             "description": "Charismatique, jongle avec les bouteilles. Complice de Lola.",
             "pos": [
-                6,
-                8
+                8,
+                9
             ],
             "energy": 90,
             "excitation": 5,
@@ -107,8 +107,8 @@
             "age": 42,
             "description": "Habitué. Regard prédateur mais poli. En couple avec Sophie.",
             "pos": [
-                14,
-                14
+                15,
+                16
             ],
             "energy": 85,
             "excitation": 15,
@@ -122,7 +122,7 @@
             "description": "Élégante, très ouverte. Cherche à initier les nouveaux.",
             "pos": [
                 15,
-                15
+                16
             ],
             "energy": 85,
             "excitation": 20,
@@ -131,16 +131,17 @@
             "inventory": []
         }
     },
-    "world_time": 21,
+    "world_time": 1201,
     "logs": [
-        "**21h - Clem** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Le cœur me bat à cent à l'heure. C'est intimidant, mais Mary est magnifique dans cette lumière tamisée. On est là, on l'a fait. On est au milieu du restaurant, tout semble si chic, loin de ce que j'imaginais. Il faut que je la rassure autant que je me rassure moi-même.*\n> PARLER  \"Je serre doucement la main de Mary, sentant l'humidité de sa paume contre la mienne. Je lui murmure à l'oreille : 'Respire, ma chérie... On y est. On ne se presse pas, on observe simplement pour commencer. Si on allait s'installer au bar pour prendre un verre et se détendre un peu ?'\"",
-        "**21h - Mary** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Mon cœur bat si fort que j'ai l'impression qu'on peut l'entendre à travers ma robe. C'est intimidant mais si excitant à la fois... Je me sens observée, et l'idée de ce qui nous attend dans la Zone X plus tard me donne déjà des frissons.*\n> PARLER  \"(Je serre la main de Clem un peu plus fort, lui jetant un regard timide mais complice) On y est enfin... L'ambiance est vraiment superbe, tu ne trouves pas ? On devrait peut-être se poser quelques minutes pour observer un peu avant de bouger.\"",
-        "**21h - Chloe** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Tiens, un nouveau couple. Ils ont l'air un peu nerveux, leurs mains tremblent presque, c'est typique des soirées découverte. Je vais les accueillir avec mon plus beau sourire pour faire descendre la pression.*\n> PARLER  \"Bonsoir ! Bienvenue à l'Eros Club. Je m'appelle Chloé. Ne soyez pas intimidés, vous allez voir, l'ambiance est très bienveillante ici. Je vous laisse me confier vos vestes ? Et n'oubliez pas la règle d'or : je garde vos téléphones sous clé pour que vous puissiez profiter de votre soirée en toute discrétion et liberté.\"",
-        "**21h - Lola** (Bar (Cyan)) [❤️10% 🍷0.0g]\n*Le calme avant la tempête. Je sens déjà l'électricité dans l'air avec l'arrivée des premiers clients. Il est temps que je me mette en place derrière mon comptoir ; les cocktails ne vont pas se servir tout seuls et ces petits nouveaux vont avoir besoin d'un peu de courage liquide.*\n> SE DEPLACER  \"Lola lisse sa jupe ajustée d'un geste suggestif, adresse un sourire entendu à Mike en passant à sa hauteur : 'Prêt pour le rush, Mike ? Je vais chauffer le bar.' Elle se dirige ensuite vers la zone de service d'un pas assuré et sensuel.\"",
-        "**21h - Mike** (Bar (Cyan)) [❤️5% 🍷0.0g]\n*Je vois deux nouvelles silhouettes à l'entrée, Clem et Mary si j'en crois le planning. Elles ont l'air un peu crispées, c'est charmant. Il est temps que je reprenne ma place derrière le zinc pour leur montrer de quel bois je me chauffe avec mes shakers. Un petit clin d'œil à Lola en passant, l'ambiance commence à monter.*\n> SE DEPLACER  \"Je réajuste mon gilet noir avec un sourire en coin, adresse un signe de tête complice à Lola et me dirige d'un pas assuré vers le Bar. En croisant les nouvelles arrivantes, je laisse traîner un regard chaleureux : 'Bienvenue à l'Eros Club, mesdames... Ne soyez pas timides, je vous prépare de quoi vous détendre d'ici une minute.'\"",
-        "**21h - Igor** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Tiens, voilà les petits nouveaux. Ils ont l'air nerveux, les mains moites et le regard hésitant. Mon boulot, c'est de m'assurer qu'ils franchissent le seuil en se sentant en sécurité, mais en comprenant bien que l'ordre règne ici.*\n> PARLER  \"Bonsoir. Bienvenue à l'Eros. Pour la 'Soirée Découverte', j'imagine ? Détendez-vous, respirez un grand coup. Une fois la porte passée, laissez vos craintes au vestiaire avec Chloé. On veille sur vous.\"",
-        "**21h - Marc** (Restaurant (Beige)) [❤️15% 🍷0.2g]\n*Tiens, du sang neuf. Ces deux-là ont l'air délicieusement nerveuses avec leurs mains moites. Un mélange d'innocence et de curiosité qui ne demande qu'à être exploré. Je vais rester à distance pour l'instant, les laisser s'imprégner de l'odeur du club.*\n> SE DEPLACER  \"Je pose une main possessive mais souple sur la hanche de Sophie, l'orientant vers le bar. En passant près de Clem et Mary, je soutiens leur regard juste une seconde de trop, un sourire énigmatique aux lèvres, avant de murmurer à l'oreille de ma compagne : 'Regarde ces deux beautés, le spectacle commence bien.'\"",
-        "**21h - Sophie** (Corridor/Sol (Gris)) [❤️20% 🍷0.1g]\n*Tiens, de nouveaux visages à l'entrée... Ce petit couple a l'air délicieusement intimidé, je sens leur nervosité d'ici. J'adore cette énergie fraîche et hésitante. Il est temps de sortir de l'ombre pour les mettre à l'aise, à ma façon.*\n> SE DEPLACER  \"Sophie ajuste la soie fine de sa robe qui souligne ses hanches, adresse un clin d'œil entendu à Marc, puis s'avance vers Clem et Mary avec un sourire prédateur mais chaleureux. 'Bonsoir... Vous avez l'air d'avoir besoin d'un guide pour briser la glace, non ?'\""
+        "**20h01 - Lola** (Corridor/Sol (Gris)) [❤️10% 🍷0.0g]\n*Ce Clem... Il me fixe comme un veuf. Il faut que je sois au top. Un sourire, un regard... ça pourrait être intéressant.*\n> PARLER  \"Excuse-moi, tu as l'air un peu perdue ? Tout le monde est un peu nerveux au début, non ?\"",
+        "**20h01 - Mary** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Cette robe est un peu... osée, non ? Clem me regarde comme si sa vie en dépendait. J'aime ça. Je dois rester calme.*\n> SE DEPLACER  \"Je me déplace lentement vers le bar, observant Clem de temps en temps, un sourire discret sur les lèvres.\"",
+        "**20h01 - Mike** (Corridor/Sol (Gris)) [❤️5% 🍷0.0g]\n*Bon, le temps de faire bonne figure et observer. Mary est magnifique... et un peu nerveuse. Peut-être un sourire ?*\n> PARLER  \"Mike ajuste son tablier, lui adresse un sourire chaleureux et un clin d'œil discret. 'Soirée promet d'être chaude, n'est-ce pas ?'\"",
+        "**20h01 - Clem** (Restaurant (Beige)) [❤️0% 🍷0.0g]\n*Mary est magnifique... cette robe la rend presque... trop sexy. J'espère qu'elle appréciera ce soir. Je dois être à l'aise, détendu. Mais aussi... attentif.*\n> OBSERVER  \"Je la regarde, son sourire est éclatant. Je suis hypnotisé.\"",
+        "**20h01 - Chloe** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Bon, 20h01. Il faut que je me fasse la Chloe efficace. Le temps presse, les premiers clients arrivent. J'espère qu'ils seront sympas.*\n> PARLER  \"Bonjour ! Bienvenue à l'Eros Club. Vous avez une réservation ? Ou vous souhaitez juste vous inscrire pour la soirée ?\"",
+        "**20h01 - Sophie** (Corridor/Sol (Gris)) [❤️20% 🍷0.1g]\n*Ce lieu est exactement ce que j'espérais. L'atmosphère est incroyablement sensuelle. Mary est magnifique, et cette robe... Il faut que je l'observe un peu plus attentivement.*\n> OBSERVER  \"Je me penche légèrement pour mieux admirer Mary, un sourire charmeur aux lèvres.\"",
+        "**20h01 - Igor** (Entrée/Vestiaire (Jaune)) [❤️0% 🍷0.0g]\n*Cette ambiance... ça promet. Mary est magnifique, mais je dois rester professionnel. Et surtout, pas trop d'alcool.*\n> OBSERVER  \"J'observe la rue, les clients qui entrent, essayant de jauger l'ambiance et de repérer d'éventuels problèmes. Chloe semble apprécier le spectacle. \"",
+        "**20h01 - Marc** (Corridor/Sol (Gris)) [❤️15% 🍷0.2g]\n*Cette robe sur Mary... c'est un appel. Et ce parfum, un mélange irrésistible. 15/100, mais ça monte.*\n> PARLER  \"Marc s'approche de Mary, un sourire poli mais intense sur les lèvres. \"Vous avez l'air d'apprécier l'ambiance, mademoiselle?\"\"",
+        "*[MOTEUR] Intensité : HAUTE. Prochain saut : +1 min.*"
     ],
     "weather": "Chaud"
 }

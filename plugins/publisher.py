@@ -26,16 +26,35 @@ class StoryPDF(FPDF):
         self.cell(0, 10, f"Chapitre {num} : {label}", 0, 1, 'L')
         self.ln(10)
 
+    def sanitize_text(self, text):
+        # Remplacement des caractères problématiques pour FPDF (Latin-1)
+        replacements = {
+            "’": "'",
+            "‘": "'",
+            "“": '"',
+            "”": '"',
+            "–": "-",
+            "—": "-",
+            "…": "..."
+        }
+        for k, v in replacements.items():
+            text = text.replace(k, v)
+        
+        # Strip emojis & unsupported chars (Keep only Latin-1)
+        return text.encode('latin-1', 'replace').decode('latin-1')
+
     def chapter_body(self, body):
         self.set_font('times', '', 12)
-        # Nettoyage du markdown basique (gras/italique non géré parfaitement par FPDF simple, on clean)
+        # Nettoyage du markdown basique
         clean_body = body.replace('**', '').replace('*', '') 
+        # Sanitization Encoding
+        clean_body = self.sanitize_text(clean_body)
         self.multi_cell(0, 8, clean_body)
         self.ln()
     
     def print_chapter(self, num, title, body):
         self.add_page()
-        self.chapter_title(num, title)
+        self.chapter_title(num, self.sanitize_text(title))
         self.chapter_body(body)
 
 def publish_book_pdf(title, chapters_list, output_filename="story/Livre_Complet.pdf"):
@@ -46,14 +65,17 @@ def publish_book_pdf(title, chapters_list, output_filename="story/Livre_Complet.
     os.makedirs(os.path.dirname(output_filename), exist_ok=True)
     
     pdf = StoryPDF(title)
-    pdf.set_title(title)
+    # Sanitize Title for Metadata & Display
+    clean_title = pdf.sanitize_text(title)
+    
+    pdf.set_title(clean_title)
     pdf.set_author("Gemini & Simulation Engine")
     
     # 1. Page Titre
     pdf.add_page()
     pdf.set_font('times', 'B', 24)
     pdf.ln(60)
-    pdf.cell(0, 10, title, 0, 1, 'C')
+    pdf.cell(0, 10, clean_title, 0, 1, 'C')
     pdf.set_font('times', 'I', 16)
     pdf.cell(0, 10, "Une épopée générée par IA", 0, 1, 'C')
     pdf.ln(20)

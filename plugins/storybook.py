@@ -1,22 +1,13 @@
+from core.llm import get_llm
 import os
-from google import genai
-from datetime import datetime
 import subprocess
 
 STORY_DIR = "story"
 os.makedirs(STORY_DIR, exist_ok=True)
 
 def get_gemini_client():
-    try:
-        if not os.path.exists("api.key"):
-            return None
-        with open("api.key", "r") as f:
-            api_key = f.read().strip()
-        client = genai.Client(api_key=api_key)
-        return client
-    except Exception as e:
-        print(f"Gemini Init Error: {e}")
-        return None
+    # Deprecated: Redirect to core.llm
+    return get_llm()
 
 def prepare_prompt_ai(events):
     """
@@ -34,7 +25,7 @@ def prepare_prompt_ai(events):
         Format : "Actions: ..., Ambiance: ..."
         """
         response = client.models.generate_content(
-            model='models/gemini-3-flash-preview',
+            model='gemma3:4b',
             contents=metaprompt
         )
         return response.text.strip()
@@ -81,7 +72,7 @@ def extract_facts_ai(logs_text):
         FORMAT: "- [Nom] a trouvé..."
         """
         response = client.models.generate_content(
-            model='models/gemini-3-flash-preview',
+            model='google/gemma-3-4b',
             contents=prompt
         )
         output = response.text.strip()
@@ -95,7 +86,7 @@ def extract_facts_ai(logs_text):
     except Exception:
         return []
 
-def narrate_continuous(current_chapter_text, turn_logs, world_seed, key_facts=""):
+def narrate_continuous(current_chapter_text, turn_logs, world_seed, world_time_min=1200, key_facts=""):
     """
     Génère la suite de l'histoire en se basant sur TOUT le chapitre en cours.
     Assure une continuité parfaite.
@@ -104,10 +95,31 @@ def narrate_continuous(current_chapter_text, turn_logs, world_seed, key_facts=""
     if not client:
         return narrate_turn_local(turn_logs) # Fallback simple
 
+    # Calcul Phase Narrative
+    h = world_time_min // 60
+    m = world_time_min % 60
+    time_str = f"{h}h{m:02d}"
+    
+    directors_note = "PHASE 1 (Matinale) : Cours de magie, interactions sociales, petits secrets entres élèves."
+    if h >= 12:
+        directors_note = "PHASE 2 (Après-midi) : Sortie au village, visite des boutiques, intrigues qui se nouent."
+    if h >= 18:
+        directors_note = "PHASE 3 (Soirée) : Mystère sombre, ombres dans les couloirs, couvre-feu imminent."
+    if h >= 22 or h < 6:
+        directors_note = "PHASE 4 (Nuit) : DANGER. Exploration interdite, Forêt Interdite, créatures magiques, duels clandestins."
+    
     # Prompt avec Contexte Max
-    # Prompt Style Bande Dessinée / Roman Graphique
+    # Prompt Style Bande Dessinée / Roman Graphique Fantasy
     prompt = f"""
-    ROLE: Scénariste de Bande Dessinée Adulte / Roman Graphique (Style "Blacksad" ou "Thorgal" moderne).
+    ROLE: Auteur de Fantasy / Chroniqueur du Monde des Sorciers (Style Harry Potter).
+    PROJET: TOME 1 "MYSTÈRES DE L'ACADÉMIE".
+    TIMELINE: Une journée complète à l'école de magie.
+    NOTE: Ambiance "Magical School". Merveilleux, Whimsical, mais avec une menace sous-jacente sombre.
+    
+    CONTEXTE DU MONDE:
+    
+    DIRECTIVE DU REALISATEUR ({directors_note}):
+    - Suis impérativement cette phase pour le ton de la scène.
     
     CONTEXTE DU MONDE:
     {world_seed['description']}
@@ -118,25 +130,27 @@ def narrate_continuous(current_chapter_text, turn_logs, world_seed, key_facts=""
     CHAPITRE EN COURS (Continuité) :
     {current_chapter_text[-3000:]} 
     
-    NOUVELLES ACTIONS DES PERSONNAGES (Raw Logs) :
+    NOUVELLES ACTIONS (Logs Minute par Minute) :
     {turn_logs}
     
     TACHE :
-    - Écris la suite sous forme de SCRIPT DE BD (Panels et Dialogues).
-    - **STYLE** : Visuel, dynamique, dialogues percutants.
-    - **LANGAGE** : Soutenu, élégant et soigné. Évite absolument le langage familier ou l'argot.
-    - **FORMAT** :
-      *   **PANEL [Lieu] :** Description courte et visuelle de l'action.
-      *   **[Perso] :** Dialogue.
+    - Écris le script de la PAGE SUIVANTE (Panels et Dialogues).
+    - **TEMPS** : Ça ne dure qu'une minute ! Étire l'action. Ne saute pas dans le temps.
+    - **STYLE** : Très visuel. Magique. Effets de sortilèges.
+    - **DIALOGUES** : Typés sorciers ("Par la barbe de Merlin!", formules magiques).
+    - **LANGAGE** : Romanesque, immersif.
     
-    - **SPATIALITÉ** : Respecte scrupuleusement les zones (Bar, Piste...).
-    - **COHÉRENCE** : Les ivres balbutient, les timides hésitent.
-    - Évite les descriptions psychologiques vagues ("Il pense que..."). Montre-le par l'action ("Il serre les poings").
+    FORMAT ATTENDU :
+      **PANEL 1 [Lieu] :** Description courte et visuelle.
+      **[Perso] :** Dialogue...
+      
+    - **SPATIALITÉ** : Respecte les lieux des logs.
+    - **ATTITUDE** : Montre la magie (étincelles, potions qui fument, balais qui volent).
     """
     
     try:
         response_stream = client.models.generate_content_stream(
-            model='models/gemini-3-flash-preview',
+            model='gemma3:4b',
             contents=prompt
         )
         for chunk in response_stream:
@@ -163,9 +177,39 @@ def analyze_chapter(full_chapter_text, villagers_data):
     
     try:
         response = client.models.generate_content(
-            model='models/gemini-3-flash-preview',
+            model='gemma3:4b',
             contents=prompt
         )
         return [l.strip() for l in response.text.split('\n') if l.strip().startswith('-')]
+    except Exception:
+        return []
+
+def scan_for_objects(text):
+    """
+    Scanne le texte pour trouver des objets mentionnés qui devraient apparaître sur la carte.
+    """
+    client = get_gemini_client()
+    if not client: return []
+    
+    prompt = f"""
+    Analyste de décors.
+    TEXTE:
+    {text}
+    
+    TACHE: Identifie les OBJETS PHYSIQUES concrets mentionnés qui sont "posés" ou "apparus" dans la scène (PAS ceux déjà dans l'inventaire).
+    Ex: "Elle pose une bouteille sur la table" -> Bouteille.
+    Ex: "Il sort son téléphone" -> NON (Inventaire).
+    Renvoie une liste Python de strings. Ex: ["Bouteille de vin", "Cendrier"]
+    Renvoie [] si rien.
+    """
+    try:
+        response = client.models.generate_content(
+            model='gemma3:4b',
+            contents=prompt
+        )
+        # Nettoyage basique
+        txt = response.text.replace("```python", "").replace("```", "").strip()
+        import ast
+        return ast.literal_eval(txt)
     except Exception:
         return []

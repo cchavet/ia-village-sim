@@ -1,18 +1,12 @@
+from core.llm import get_llm
 import json
 import streamlit as st
 
-def agent_turn(llm, name, characters_state, world_time, weather, seed, terrain_name, context=""):
-    v = characters_state[name]
-    
+def get_agent_prompt_data(name, v, characters_state, world_time, seed, terrain_name, context):
     # Infos perso
-    bio = v.get('description', 'Client')
+    bio = v.get('description', '')
     role = v['role']
     inventory = v.get('inventory', [])
-    
-    # Stats Club
-    excitation = v.get('excitation', 0)
-    alcohol = v.get('alcohol', 0.0)
-    cigs = v.get('cigarettes', 0)
     
     # Voisins (Detailed)
     voisins_infos = []
@@ -22,85 +16,103 @@ def agent_turn(llm, name, characters_state, world_time, weather, seed, terrain_n
         # Detection Distance (Rayon 2)
         elif abs(data['pos'][0] - v['pos'][0]) <= 2 and abs(data['pos'][1] - v['pos'][1]) <= 2:
             voisins_infos.append(f"{other} est proche")
-            
-    # Contexte & Regles
-    is_late = world_time >= 23 or world_time <= 4
-    ambiance = "Soirée qui débute, les regards se croisent." if not is_late else "L'alcool désinhibe, les règles s'assouplissent..."
-    
-    # Dynamique des règles
-    regles_intimes = "OFFICIELLEMENT: Sexe autorisé UNIQUEMENT au Coin Câlin (Zone X)."
-    if is_late or alcohol > 0.6 or excitation > 80:
-         regles_intimes += "\nREALITE: Avec l'heure et l'alcool, vous commencez à ignorer les règles. Osez plus, même au bar ou sur les canapés."
-    else:
-         regles_intimes += "\nRESPECT: Pour l'instant, soyez sages hors de la Zone X (Baisers/Caresses max). Si vous voulez plus -> DÉPLACEZ VOUS vers la Zone X."
 
-    prompt = f"""
-    CONTEXTE: Club Libertin "{seed['scenario_name']}".
-    {regles_intimes}
-    
-    DESCRIPTION LIEU: {seed['description']}
-    CHAPITRE EN COURS (Mémoire Immédiate): 
-    {context[-2500:]} 
-    (Lis attentivement ce texte ci-dessus pour savoir si quelqu'un vient de te parler ou d'agir envers toi !)
-
-    PERSONNAGE: Tu es {name}, {role} ({v['age']} ans).
-    BIO: {bio}
-    ETAT: Excitation {excitation}/100. Alcool {alcohol}g. Cigarettes {cigs}. Energie {v['energy']}.
-    LIEU ACTUEL: {terrain_name} (Coord {v['pos']}).
+    return f"""
+    --- PERSONNAGE: {name} ---
+    ROLE: {role} ({v['age']} ans). BIO: {bio}
+    ETAT: Energie {v['energy']}. Inv: {inventory}
+    LIEU: {terrain_name} (Coord {v['pos']}).
     VOISINS: {voisins_infos}.
+    """
+
+def agent_turn(llm, name, characters_state, world_time, weather, seed, terrain_name, context=""):
+    # Wrapper simple pour compatibilité
+    # On pourrait appeler batch_agent_turn avec une liste de 1, mais pour garder la logique "Main Character" pure, on garde le prompt individuel riche.
+    return batch_agent_turn(llm, [name], characters_state, world_time, weather, seed, {name: terrain_name}, context)[name]
+
+def batch_agent_turn(llm, agent_names, characters_state, world_time, weather, seed, terrains_dict, context=""):
+    """
+    Traite une liste d'agents en une seule requête LLM.
+    Retourne un dict {name: decision_dict}
+    """
     
-    AMBIANCE: {ambiance}
+    agents_block = ""
+    for name in agent_names:
+        v = characters_state[name]
+        agents_block += get_agent_prompt_data(name, v, characters_state, world_time, seed, terrains_dict.get(name, "Inconnu"), context)
     
-    OBJECTIF: Passer une soirée mémorable. Agis selon ta Bio et tes Stats.
+    prompt = f"""
+    CONTEXTE: {seed['scenario_name']}
+    HEURE ACTUELLE: {world_time}
+    DESCRIPTION LIEU GLOBALE: {seed['description']}
+    
+    CHAPITRE EN COURS (Mémoire Immédiate): 
+    {context[-2000:]} 
+    
+    VOICI LES PERSONNAGES A JOUER (Groupe):
+    {agents_block}
+    
+    OBJECTIF COMMUN: Vivre leur vie dans cet univers.
+    CONSIGNE DE TEMPS: **1 TOUR = 1 HEURE.**
     
     ACTIONS POSSIBLES:
-    - "SE DEPLACER": Changer de zone (Bar, Piste, Coin Câlin...).
-    - "BOIRE": Prendre un verre (Monte Alcool).
-    - "FUMER": Aller au fumoir (Monte Cigarettes).
-    - "PARLER": Discuter, draguer.
-    - "DANSER": Aller sur la piste.
-    - "INTERAGIR": Utiliser un objet ou initier un contact physique (Caresser, Embrasser...).
-    - "OBSERVER": Regarder ce qui se passe (Voyeurisme).
-
-    Réponds UNIQUEMENT en JSON.
-    Sois CRÉATIF, SENSUEL et COHÉRENT avec ta personnalité et ton taux d'alcool.
+    - "SE DEPLACER": Changer de lieu.
+    - "ETUDIER/TRAVAILLER": Améliorer compétences.
+    - "DISCUTER": Social.
+    - "EXPLORER": Fouiller.
+    - "MAGIE": Pratiquer.
+    - "REPOS": Dormir.
+    - "RIEN": Attendre.
     
-    Format :
+    Réponds UNIQUEMENT en JSON.
+    Format attendu : Dictionnaire avec le nom de l'agent comme clé.
     {{
-        "pensee": "Pensée intérieure (Introspection, Désir, Doute...)",
-        "action": "ACTION",
-        "dest": [x, y],
-        "reaction": "Parole ou description de l'action"
+        "NomAgent1": {{
+            "pensee": "...",
+            "action": "ACTION",
+            "dest": [x, y],
+            "reaction": "..."
+        }},
+        "NomAgent2": ...
     }}
     """
+    
     try:
         res = llm.invoke(prompt)
         
-        # Nettoyage
+        # Nettoyage JSON
         start = res.find('{')
         end = res.rfind('}')
         if start != -1 and end != -1:
             json_str = res[start:end+1]
             data = json.loads(json_str)
             
-            # Defaults
-            defaults = {
-                "action": "OBSERVER",
-                "pensee": "Regarde autour...",
-                "dest": v['pos'],
-                "reaction": None
-            }
-            data = {**defaults, **data}
+            final_results = {}
+            for name in agent_names:
+                d = data.get(name)
+                # Fallback Defaults
+                defaults = {
+                    "action": "RIEN",
+                    "pensee": "Attend...",
+                    "dest": characters_state[name]['pos'],
+                    "reaction": None
+                }
+                
+                if not d:
+                    final_results[name] = defaults
+                else:
+                    # Validate Dest
+                    dst = d.get('dest')
+                    if not isinstance(dst, list) or len(dst) != 2:
+                        d['dest'] = characters_state[name]['pos']
+                    final_results[name] = {**defaults, **d}
             
-            # Validation Coordonnées
-            dest = data.get('dest')
-            if not isinstance(dest, list) or len(dest) != 2:
-                data['dest'] = v['pos']
-            
-            return data
+            return final_results
+
         else:
-             raise ValueError("JSON introuvable")
+             raise ValueError("JSON invalide")
 
     except Exception as e:
-        print(f"Erreur IA {name}: {e}")
-        return {"pensee": f"Je suis un peu perdu... ({e})", "action": "RIEN", "dest": v['pos'], "reaction": None}
+        print(f"Erreur Batch IA: {e}")
+        # Return fallback for all
+        return {name: {"action": "RIEN", "pensee": f"Erreur {e}", "dest": characters_state[name]['pos'], "reaction": None} for name in agent_names}
