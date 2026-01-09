@@ -6,5 +6,5 @@ __pycache__/
 memo.txt
 api.key
 ./temp
-./tmp.driveupload/
-./tmp.drivedownload/
+./.tmp.driveupload
+./.tmp.drivedownload
